@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System & UX Governance — Sonal Bhagria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --cream:#FAF7F2;--cream-dark:#F2EDE4;--cream-deeper:#E8E0D4;
+    --gold:#C8A96E;--gold-light:#DFC49A;--gold-dark:#A8894E;
+    --ink:#1C1814;--ink-soft:#3D3530;--muted:#7A6E64;--hint:#A89F95;
+    --border:rgba(200,169,110,0.2);--border-soft:rgba(28,24,20,0.08);
+    --serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',sans-serif;
+  }
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  .cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
+  .cursor-ring{width:32px;height:32px;border:1px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:0.5;transition:opacity 0.2s;}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s cubic-bezier(0.22,1,0.36,1),transform 0.7s cubic-bezier(0.22,1,0.36,1);}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .reveal-delay-1{transition-delay:0.1s}.reveal-delay-2{transition-delay:0.2s}.reveal-delay-3{transition-delay:0.3s}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 4rem;transition:background 0.4s,border-bottom 0.4s;}
+  nav.scrolled{background:rgba(250,247,242,0.92);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border-soft);}
+  .nav-logo{font-family:var(--serif);font-size:17px;font-weight:300;letter-spacing:0.03em;color:var(--ink);text-decoration:none;}
+  .nav-back{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color 0.2s;}
+  .nav-back:hover{color:var(--gold);}
+  .cs-hero{padding:10rem 4rem 6rem;max-width:1100px;margin:0 auto;}
+  .cs-breadcrumb{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:2.5rem;}
+  .cs-breadcrumb a{color:var(--hint);text-decoration:none;transition:color 0.2s;}
+  .cs-breadcrumb a:hover{color:var(--gold);}
+  .cs-breadcrumb span{color:var(--gold-light);}
+  .cs-label{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+  .cs-label::before{content:'';display:block;width:32px;height:1px;background:var(--gold);}
+  .cs-title{font-family:var(--serif);font-size:clamp(40px,6vw,72px);font-weight:300;line-height:1.05;letter-spacing:-0.02em;margin-bottom:2rem;}
+  .cs-title em{font-style:italic;color:var(--gold-dark);}
+  .cs-meta-row{display:flex;gap:3rem;flex-wrap:wrap;padding:2rem 0;border-top:0.5px solid var(--border-soft);border-bottom:0.5px solid var(--border-soft);}
+  .cs-meta-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:4px;}
+  .cs-meta-val{font-size:14px;color:var(--ink-soft);}
+  .cs-body{max-width:1100px;margin:0 auto;padding:0 4rem 6rem;}
+  .cs-section{padding:4rem 0;border-bottom:0.5px solid var(--border-soft);}
+  .cs-section:last-child{border-bottom:none;}
+  .cs-section-kicker{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;}
+  .cs-section-kicker::before{content:'';width:20px;height:1px;background:var(--gold);}
+  .cs-section-title{font-family:var(--serif);font-size:clamp(26px,3vw,38px);font-weight:300;line-height:1.2;margin-bottom:2rem;}
+  .cs-section-title em{font-style:italic;}
+  .cs-two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+  .cs-prose{font-size:15px;line-height:1.9;color:var(--muted);}
+  .cs-prose p{margin-bottom:1.25rem;}
+  .cs-prose p:last-child{margin-bottom:0;}
+  .cs-prose strong{font-weight:500;color:var(--ink-soft);}
+  .cs-quote{padding:3rem 0;display:grid;grid-template-columns:4px 1fr;gap:2rem;align-items:start;}
+  .cs-quote-bar{background:var(--gold);height:100%;}
+  .cs-quote-text{font-family:var(--serif);font-size:clamp(22px,2.5vw,30px);font-weight:300;line-height:1.5;letter-spacing:0.01em;font-style:italic;color:var(--ink-soft);}
+
+  /* DS COMPONENTS VISUAL */
+  .ds-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border-soft);margin-top:2rem;}
+  .ds-cell{background:var(--cream);padding:2rem;}
+  .ds-cell-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:1rem;}
+  .ds-swatch-row{display:flex;gap:6px;margin-bottom:0.75rem;}
+  .ds-swatch{width:32px;height:32px;border-radius:2px;}
+  .ds-type-row{margin-bottom:6px;}
+  .ds-type-display{font-family:var(--serif);font-size:28px;font-weight:300;color:var(--ink);line-height:1;}
+  .ds-type-body{font-size:13px;color:var(--muted);}
+  .ds-type-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);}
+  .ds-comp-row{display:flex;flex-direction:column;gap:8px;}
+  .ds-btn{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:8px 16px;background:var(--gold);color:var(--cream);border-radius:1px;border:none;display:inline-block;width:fit-content;}
+  .ds-btn-ghost{background:transparent;border:0.5px solid var(--border-soft);color:var(--ink-soft);}
+  .ds-tag{font-size:10px;padding:4px 10px;border:0.5px solid var(--border-soft);color:var(--muted);border-radius:1px;display:inline-block;width:fit-content;}
+
+  .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5px;background:var(--border-soft);margin-top:2rem;}
+  .process-step{background:var(--cream);padding:2rem 1.5rem;}
+  .step-num{font-family:var(--serif);font-size:36px;font-weight:300;color:var(--gold-light);margin-bottom:0.75rem;line-height:1;}
+  .step-title{font-size:13px;font-weight:500;letter-spacing:0.04em;margin-bottom:0.5rem;color:var(--ink);}
+  .step-desc{font-size:12px;line-height:1.7;color:var(--muted);}
+
+  .outcomes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border-soft);margin-top:2rem;}
+  .outcome-cell{background:var(--cream-dark);padding:2.5rem 2rem;}
+  .outcome-num{font-family:var(--serif);font-size:48px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:8px;}
+  .outcome-label{font-size:12px;font-weight:500;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:6px;}
+  .outcome-desc{font-size:12px;line-height:1.7;color:var(--muted);}
+
+  .cs-nav-footer{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin-top:4rem;}
+  .cs-nav-cell{background:var(--cream);padding:2.5rem;text-decoration:none;color:var(--ink);transition:background 0.2s;}
+  .cs-nav-cell:hover{background:var(--cream-dark);}
+  .cs-nav-dir{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:8px;}
+  .cs-nav-title{font-family:var(--serif);font-size:20px;font-weight:300;}
+  .cs-nav-arrow{font-size:18px;color:var(--gold);margin-top:12px;display:block;}
+  .cs-nav-cell.next{text-align:right;}
+  footer{background:var(--ink);color:var(--hint);padding:2.5rem 4rem;display:flex;justify-content:space-between;align-items:center;}
+  .footer-name{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--cream-dark);}
+  .footer-right{font-size:11px;letter-spacing:0.06em;}
+  .gold-rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.4;}
+  @media(max-width:900px){
+    nav{padding:1.25rem 2rem;}
+    .cs-hero,.cs-body{padding-left:2rem;padding-right:2rem;}
+    .cs-hero{padding-top:8rem;}
+    .cs-two-col{grid-template-columns:1fr;}
+    .ds-preview,.process-steps{grid-template-columns:1fr 1fr;}
+    .outcomes-grid{grid-template-columns:1fr 1fr;}
+    .cs-nav-footer{grid-template-columns:1fr;}
+    footer{flex-direction:column;gap:1rem;text-align:center;padding:2rem;}
+  }
+  @media(max-width:600px){
+    .ds-preview,.process-steps,.outcomes-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">Sonal Bhagria</a>
+  <a href="index.html#work" class="nav-back">← Back to work</a>
+</nav>
+
+<div class="cs-hero">
+  <div class="cs-breadcrumb reveal"><a href="index.html">Home</a><span>/</span><span>Case study</span></div>
+  <div class="cs-label reveal reveal-delay-1">EIU · 2019–2021</div>
+  <h1 class="cs-title reveal reveal-delay-2">Design System &amp;<br><em>UX Governance</em></h1>
+  <div class="cs-meta-row reveal reveal-delay-3">
+    <div><p class="cs-meta-label">Role</p><p class="cs-meta-val">Lead Product Designer</p></div>
+    <div><p class="cs-meta-label">Company</p><p class="cs-meta-val">The Economist Intelligence Unit</p></div>
+    <div><p class="cs-meta-label">Timeline</p><p class="cs-meta-val">2019 – 2021</p></div>
+    <div><p class="cs-meta-label">Scope</p><p class="cs-meta-val">Design Systems, Accessibility, Governance</p></div>
+  </div>
+</div>
+
+<div class="cs-body">
+
+  <div class="cs-section">
+    <div class="cs-two-col reveal">
+      <div>
+        <p class="cs-section-kicker">Overview</p>
+        <h2 class="cs-section-title">The <em>challenge</em></h2>
+        <div class="cs-prose">
+          <p>Across the EIU's portfolio of digital products, visual and interaction patterns had evolved organically — resulting in inconsistencies that undermined both user experience and team efficiency. Designers were solving the same problems repeatedly, and engineers were implementing divergent solutions.</p>
+          <p>The challenge was to create a shared design language — one robust enough to support diverse product types, flexible enough to accommodate evolving content, and adopted widely enough to actually make a difference.</p>
+        </div>
+      </div>
+      <div>
+        <p class="cs-section-kicker">My role</p>
+        <h2 class="cs-section-title">What I <em>led</em></h2>
+        <div class="cs-prose">
+          <p>I led the design, documentation, and adoption of a comprehensive design system — from initial audit through to governance framework. I worked directly with engineering teams to ensure components were implemented faithfully, and with product leadership to establish standards that stuck.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-quote reveal">
+    <div class="cs-quote-bar"></div>
+    <p class="cs-quote-text">"A design system is only as strong as its adoption. Building it was the first challenge — making teams actually use it was the second."</p>
+  </div>
+
+  <!-- DS PREVIEW -->
+  <div class="cs-section">
+    <p class="cs-section-kicker reveal">System preview</p>
+    <h2 class="cs-section-title reveal reveal-delay-1">Foundations &amp; <em>components</em></h2>
+    <div class="ds-preview reveal reveal-delay-2">
+      <div class="ds-cell">
+        <p class="ds-cell-label">Colour palette</p>
+        <div class="ds-swatch-row">
+          <div class="ds-swatch" style="background:#1C1814;"></div>
+          <div class="ds-swatch" style="background:#C8A96E;"></div>
+          <div class="ds-swatch" style="background:#FAF7F2;"></div>
+          <div class="ds-swatch" style="background:#F2EDE4;"></div>
+          <div class="ds-swatch" style="background:#7A6E64;"></div>
+        </div>
+        <p class="ds-type-label" style="margin-top:4px;">5 core tokens · semantic aliases</p>
+      </div>
+      <div class="ds-cell">
+        <p class="ds-cell-label">Typography scale</p>
+        <div class="ds-type-row"><div class="ds-type-display">Aa</div><div class="ds-type-label">Display — Cormorant Garamond 300</div></div>
+        <div class="ds-type-row" style="margin-top:8px;"><div class="ds-type-body">Aa Body text</div><div class="ds-type-label">Body — DM Sans 400</div></div>
+      </div>
+      <div class="ds-cell">
+        <p class="ds-cell-label">Core components</p>
+        <div class="ds-comp-row">
+          <div class="ds-btn">Primary button</div>
+          <div class="ds-btn ds-btn-ghost">Secondary button</div>
+          <div class="ds-tag">Tag / label</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <p class="cs-section-kicker reveal">Process</p>
+    <h2 class="cs-section-title reveal reveal-delay-1">How we <em>built it</em></h2>
+    <div class="process-steps reveal reveal-delay-2">
+      <div class="process-step">
+        <div class="step-num">01</div>
+        <p class="step-title">UX audit</p>
+        <p class="step-desc">Conducted a comprehensive audit across all digital products — cataloguing patterns, identifying inconsistencies, and prioritising what to standardise first.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">02</div>
+        <p class="step-title">Foundation tokens</p>
+        <p class="step-desc">Established colour, typography, spacing, and elevation tokens — creating a shared vocabulary that both design and engineering teams could reference.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">03</div>
+        <p class="step-title">Component library</p>
+        <p class="step-desc">Built a reusable Figma component library with variants, states, and documentation — covering 40+ components from buttons to complex data display patterns.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">04</div>
+        <p class="step-title">Governance &amp; adoption</p>
+        <p class="step-desc">Introduced contribution guidelines, review processes, and regular design crits to embed the system into team workflows and ensure ongoing quality.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <p class="cs-section-kicker reveal">Outcomes</p>
+    <h2 class="cs-section-title reveal reveal-delay-1">Key <em>results</em></h2>
+    <div class="outcomes-grid reveal reveal-delay-2">
+      <div class="outcome-cell">
+        <div class="outcome-num">40+</div>
+        <p class="outcome-label">Components documented</p>
+        <p class="outcome-desc">A comprehensive Figma library covering core UI patterns, data visualisation components, and complex editorial layouts.</p>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">↓</div>
+        <p class="outcome-label">Reduced design debt</p>
+        <p class="outcome-desc">Systematic adoption reduced time spent on repeated design decisions, freeing the team for higher-value discovery and strategy work.</p>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">✦</div>
+        <p class="outcome-label">Cross-team consistency</p>
+        <p class="outcome-desc">Consistent UX standards applied across all digital products, improving brand coherence and reducing handoff friction between design and engineering.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-nav-footer reveal">
+    <a href="case-study-ai-platform.html" class="cs-nav-cell">
+      <p class="cs-nav-dir">← Previous</p>
+      <p class="cs-nav-title">AI-Assisted Research Platform</p>
+      <span class="cs-nav-arrow">←</span>
+    </a>
+    <a href="case-study-streaming.html" class="cs-nav-cell next">
+      <p class="cs-nav-dir">Next →</p>
+      <p class="cs-nav-title">Multi-Platform Streaming UX</p>
+      <span class="cs-nav-arrow">→</span>
+    </a>
+  </div>
+
+</div>
+
+<div class="gold-rule"></div>
+<footer>
+  <span class="footer-name">Sonal Bhagria</span>
+  <span class="footer-right">Lead Product Designer · Gurugram, India · 2025</span>
+</footer>
+
+<script>
+  const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function animCursor(){cursor.style.transform=`translate(${mx-4}px,${my-4}px)`;rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.transform=`translate(${rx-16}px,${ry-16}px)`;requestAnimationFrame(animCursor);}
+  animCursor();
+  document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>ring.style.opacity='0.9');el.addEventListener('mouseleave',()=>ring.style.opacity='0.5');});
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+</script>
+</body>
+</html>
