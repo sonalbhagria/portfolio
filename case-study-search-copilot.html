@@ -75,6 +75,12 @@
   .in sup{font-size:26px;vertical-align:super;}
   .il{font-size:12px;font-weight:500;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:4px;}
   .id{font-size:12px;color:var(--muted);line-height:1.6;}
+  .screen-frame{background:var(--cream-deeper);border-radius:6px;padding:10px 10px 6px;margin:2.5rem 0;border:0.5px solid var(--border-soft);}
+  .screen-bar{display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:0 4px;}
+  .screen-dot{width:8px;height:8px;border-radius:50%;background:var(--cream-deeper);border:0.5px solid var(--border-soft);}
+  .screen-url{flex:1;height:18px;background:var(--cream);border-radius:3px;border:0.5px solid var(--border-soft);}
+  .screen-frame img{width:100%;display:block;border-radius:3px;border:0.5px solid var(--border-soft);}
+  .screen-caption{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--hint);text-align:center;margin-top:10px;padding-bottom:4px;}
   .tl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2.5rem 0;}
   .ts{background:var(--cream);padding:2.5rem 2rem;}
   .ts.hi{background:var(--cream-dark);}
@@ -167,6 +173,12 @@
     <div class="cell alt"><p class="ck">What improved</p><p class="ct">Short-term gains</p><ul class="cl"><li>Some reduction in irrelevant results for known queries</li><li>Slightly better use of filters once terminology was clarified</li><li>Marginal improvement in search consistency</li></ul></div>
     <div class="cell"><p class="ck">What still didn't work</p><p class="ct">The structural limitation</p><ul class="cl"><li>Drop-off rate was still 33%</li><li>Success rate remained unchanged</li><li>Question-based queries continued to perform poorly</li><li>Users still depended on knowing how the system worked</li></ul></div>
   </div>
+  <div class="screen-frame reveal">
+    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
+    <img src="stage-1-keyword-search.png" alt="EIU keyword search results — Stage 1">
+    <p class="screen-caption">Stage 1 — Optimised keyword search results page</p>
+  </div>
+
   <div class="quote reveal">
     <div class="qbar"></div>
     <p class="qt">"Incremental fixes could not address the core mismatch — between how users think (in questions and exploration) and how the system retrieved information (through terms and tags)."</p>
@@ -189,6 +201,12 @@
     </div>
   </div>
 
+  <div class="screen-frame reveal">
+    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
+    <img src="stage-2-semantic-search.png" alt="EIU semantic search with AI-generated answer — Stage 2">
+    <p class="screen-caption">Stage 2 — Semantic search with AI-generated answer and cited sources</p>
+  </div>
+
   <div class="rule"></div>
   <div class="sh reveal">
     <div class="pill"><span class="pill-tag">Stage 03</span></div>
@@ -201,6 +219,12 @@
       <div class="cell alt"><p class="ck">Why a multi-turn co-pilot</p><p class="ct">Real decisions are iterative</p><ul class="cl"><li>Real decisions are iterative and exploratory, not single-query events</li><li>A co-pilot retains context across turns and builds on previous responses</li><li>Supports follow-up and comparison without losing the thread</li></ul></div>
     </div>
     <div class="cell"><p class="ck">Design principles</p><p class="ct">Transparency &amp; user control</p><ul class="cl"><li>Transparency: responses are grounded in sources and assumptions are visible</li><li>User control: the co-pilot supports reasoning, not conclusions</li><li>Follow-up question suggestions surface naturally in the interface</li><li>AI attribution is always visible — users know what generated the answer</li></ul></div>
+  </div>
+
+  <div class="screen-frame reveal">
+    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
+    <img src="stage-3-copilot.png" alt="EIU AI Lens multi-turn co-pilot — Stage 3">
+    <p class="screen-caption">Stage 3 — AI Lens: multi-turn decision co-pilot with context-aware follow-up suggestions</p>
   </div>
 
   <div class="rule"></div>
