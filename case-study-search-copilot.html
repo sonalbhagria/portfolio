@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search to AI Co-pilot — Sonal Bhagria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --cream:#FAF7F2;--cream-dark:#F2EDE4;--cream-deeper:#E8E0D4;
+    --gold:#C8A96E;--gold-light:#DFC49A;--gold-dark:#A8894E;
+    --ink:#1C1814;--ink-soft:#3D3530;--muted:#7A6E64;--hint:#A89F95;
+    --border-soft:rgba(28,24,20,0.08);
+    --serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',sans-serif;
+  }
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  .cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
+  .cursor-ring{width:32px;height:32px;border:1px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:0.5;transition:opacity 0.2s;}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1);}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 4rem;transition:background 0.4s,border-bottom 0.4s;}
+  nav.scrolled{background:rgba(250,247,242,0.92);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border-soft);}
+  .nav-logo{font-family:var(--serif);font-size:17px;font-weight:300;letter-spacing:0.03em;color:var(--ink);text-decoration:none;}
+  .nav-back{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+  .nav-back:hover{color:var(--gold);}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 4rem;}
+  .hero{padding-top:9rem;padding-bottom:0;}
+  .crumb{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:2.5rem;}
+  .crumb a{color:var(--hint);text-decoration:none;transition:color 0.2s;}
+  .crumb a:hover{color:var(--gold);}
+  .crumb span{color:var(--gold-light);}
+  .eyebrow{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+  .eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--gold);}
+  h1{font-family:var(--serif);font-size:clamp(36px,5.5vw,66px);font-weight:300;line-height:1.06;letter-spacing:-0.02em;margin-bottom:1.75rem;max-width:820px;}
+  h1 em{font-style:italic;color:var(--gold-dark);}
+  .intro{font-size:15px;line-height:1.85;color:var(--muted);max-width:580px;margin-bottom:3rem;}
+  .meta-row{display:flex;gap:0;flex-wrap:wrap;border-top:0.5px solid var(--border-soft);border-bottom:0.5px solid var(--border-soft);}
+  .mc{padding:1.75rem 2.5rem 1.75rem 0;margin-right:2.5rem;border-right:0.5px solid var(--border-soft);}
+  .mc:last-child{border-right:none;margin-right:0;}
+  .ml{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:5px;}
+  .mv{font-size:14px;color:var(--ink-soft);}
+  .body{padding-bottom:6rem;}
+  .rule{height:0.5px;background:var(--border-soft);margin:4rem 0 0;}
+  .gold-bar{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.4;}
+  .sh{padding:4rem 0 0;}
+  .pill{display:inline-flex;align-items:center;margin-bottom:1.5rem;}
+  .pill-tag{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;padding:5px 12px;border:0.5px solid var(--gold);color:var(--gold);border-radius:1px;}
+  h2{font-family:var(--serif);font-size:clamp(26px,3.5vw,42px);font-weight:300;line-height:1.15;letter-spacing:-0.01em;margin-bottom:0.75rem;}
+  h2 em{font-style:italic;}
+  .sh-sub{font-family:var(--serif);font-size:17px;font-weight:300;font-style:italic;color:var(--muted);margin-bottom:2.5rem;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;padding:2.5rem 0;}
+  .prose{font-size:15px;line-height:1.9;color:var(--muted);}
+  .prose p{margin-bottom:1.25rem;}
+  .prose p:last-child{margin-bottom:0;}
+  .prose strong{font-weight:500;color:var(--ink-soft);}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .cell{background:var(--cream);padding:2rem 1.75rem;}
+  .cell.alt{background:var(--cream-dark);}
+  .ck{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
+  .ct{font-family:var(--serif);font-size:17px;font-weight:400;line-height:1.3;margin-bottom:1rem;color:var(--ink);}
+  .cl{list-style:none;padding:0;}
+  .cl li{font-size:13px;line-height:1.75;color:var(--muted);padding-left:14px;position:relative;margin-bottom:4px;}
+  .cl li::before{content:'·';position:absolute;left:0;color:var(--gold);}
+  .quote{padding:3rem 0;display:grid;grid-template-columns:4px 1fr;gap:2rem;}
+  .qbar{background:var(--gold);}
+  .qt{font-family:var(--serif);font-size:clamp(18px,2.5vw,26px);font-weight:300;line-height:1.55;font-style:italic;color:var(--ink-soft);}
+  .impact{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border-soft);margin:3.5rem 0 0;}
+  .ic{background:var(--cream-deeper);padding:2.5rem 2rem;text-align:center;}
+  .in{font-family:var(--serif);font-size:52px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:6px;}
+  .in sup{font-size:26px;vertical-align:super;}
+  .il{font-size:12px;font-weight:500;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:4px;}
+  .id{font-size:12px;color:var(--muted);line-height:1.6;}
+  .tl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2.5rem 0;}
+  .ts{background:var(--cream);padding:2.5rem 2rem;}
+  .ts.hi{background:var(--cream-dark);}
+  .tsl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
+  .tst{font-family:var(--serif);font-size:19px;font-weight:300;line-height:1.2;margin-bottom:0.5rem;}
+  .tstag{font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;background:var(--cream-deeper);color:var(--hint);border-radius:1px;display:inline-block;margin-bottom:1.25rem;}
+  .tll{list-style:none;padding:0;}
+  .tll li{font-size:12px;line-height:1.7;color:var(--muted);padding-left:14px;position:relative;margin-bottom:3px;}
+  .tll li::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:10px;top:2px;}
+  .tdiv{width:100%;height:0.5px;background:var(--border-soft);margin:1.25rem 0;}
+  .tll-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:8px;}
+  .rg{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .og{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .oc{background:var(--cream-dark);padding:2.5rem 2rem;}
+  .oi{font-family:var(--serif);font-size:34px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:10px;}
+  .ol{font-size:13px;font-weight:500;letter-spacing:0.03em;color:var(--ink-soft);margin-bottom:6px;}
+  .od{font-size:12px;line-height:1.75;color:var(--muted);}
+  .nav-f{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin-top:4rem;}
+  .nfc{background:var(--cream);padding:2.5rem;text-decoration:none;color:var(--ink);transition:background 0.2s;}
+  .nfc:hover{background:var(--cream-dark);}
+  .nfd{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:8px;}
+  .nft{font-family:var(--serif);font-size:20px;font-weight:300;}
+  .nfa{font-size:18px;color:var(--gold);margin-top:12px;display:block;}
+  .nfc.r{text-align:right;}
+  footer{background:var(--ink);color:var(--hint);padding:2.5rem 4rem;display:flex;justify-content:space-between;align-items:center;}
+  .fn{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--cream-dark);}
+  .fr{font-size:11px;letter-spacing:0.06em;}
+  @media(max-width:900px){
+    nav,.wrap{padding-left:2rem;padding-right:2rem;}
+    .hero{padding-top:7rem;}
+    .two,.rg,.nav-f{grid-template-columns:1fr;}
+    .three,.tl,.impact,.og{grid-template-columns:1fr 1fr;}
+    footer{flex-direction:column;gap:1rem;text-align:center;padding:2rem;}
+  }
+  @media(max-width:600px){
+    .three,.tl,.impact,.og{grid-template-columns:1fr;}
+    .meta-row{flex-direction:column;}
+    .mc{border-right:none;border-bottom:0.5px solid var(--border-soft);padding:1.25rem 0;margin-right:0;}
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">Sonal Bhagria</a>
+  <a href="index.html#work" class="nav-back">← Back to work</a>
+</nav>
+
+<div class="wrap hero">
+  <div class="crumb reveal"><a href="index.html">Home</a><span>/</span><span>Case study</span></div>
+  <div class="eyebrow reveal d1">EIU · Featured project</div>
+  <h1 class="reveal d2">Evolving a traditional search into a <em>multi-turn AI co-pilot</em></h1>
+  <p class="intro reveal d3">A three-stage design journey — from fixing keyword search, to semantic understanding, to a context-aware decision companion built for global business and policy audiences.</p>
+  <div class="meta-row reveal d4">
+    <div class="mc"><p class="ml">Role</p><p class="mv">Lead Product Designer + UX Researcher</p></div>
+    <div class="mc"><p class="ml">Company</p><p class="mv">The Economist Intelligence Unit</p></div>
+    <div class="mc"><p class="ml">Scope</p><p class="mv">Search · AI · Product Strategy</p></div>
+    <div class="mc"><p class="ml">Stages</p><p class="mv">3 — Keyword → Semantic → Co-pilot</p></div>
+  </div>
+</div>
+
+<div class="wrap body">
+
+  <div class="impact reveal">
+    <div class="ic"><div class="in">33<sup>%</sup></div><p class="il">Drop-off rate</p><p class="id">of search-led sessions ended with users leaving at a critical moment</p></div>
+    <div class="ic"><div class="in">57<sup>%</sup></div><p class="il">Unsuccessful searches</p><p class="id">of searches failed to connect users to relevant content</p></div>
+    <div class="ic"><div class="in">84<sup>%</sup></div><p class="il">Used no filters</p><p class="id">of searches relied on the keyword bar alone — the filter UX wasn't working</p></div>
+  </div>
+
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Context</span></div>
+    <h2>Search was a critical entry point, but <em>wasn't reliably connecting users to value</em></h2>
+    <p class="sh-sub">Context &amp; business problem</p>
+  </div>
+  <div class="two reveal d1">
+    <div class="prose"><p>Search was the primary way users accessed high-value EIU reports and analysis. Users came with clear intent — often looking for specific reports or countries. The content was strong, but the discovery experience hadn't kept pace with scale.</p><p>Search accounted for <strong>10%+ of all sessions</strong>, making it one of the most critical user journeys on the platform. But research and analytics showed it wasn't meeting expectations around relevance and speed.</p></div>
+    <div class="prose"><p>The mismatch was structural: users thought in questions and concepts, but the system retrieved through terms and tags. No amount of UI polish could bridge that gap.</p><p>This case study documents the three-stage evolution I led — from fixing the foundation, to changing it, to extending it into a multi-turn reasoning companion.</p></div>
+  </div>
+
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Stage 01</span></div>
+    <h2><em>Fixing the foundation</em></h2>
+    <p class="sh-sub">Optimising keyword search — and understanding its limits</p>
+  </div>
+  <div class="three reveal d1">
+    <div class="cell"><p class="ck">What we did</p><p class="ct">Improving the existing system</p><ul class="cl"><li>Refined Elasticsearch logic to improve ranking and reduce noise</li><li>Redesigned filter experience to improve clarity and terminology</li><li>Introduced synonyms to account for varied user language</li><li>Added snippets to all articles for better scanning</li></ul></div>
+    <div class="cell alt"><p class="ck">What improved</p><p class="ct">Short-term gains</p><ul class="cl"><li>Some reduction in irrelevant results for known queries</li><li>Slightly better use of filters once terminology was clarified</li><li>Marginal improvement in search consistency</li></ul></div>
+    <div class="cell"><p class="ck">What still didn't work</p><p class="ct">The structural limitation</p><ul class="cl"><li>Drop-off rate was still 33%</li><li>Success rate remained unchanged</li><li>Question-based queries continued to perform poorly</li><li>Users still depended on knowing how the system worked</li></ul></div>
+  </div>
+  <div class="quote reveal">
+    <div class="qbar"></div>
+    <p class="qt">"Incremental fixes could not address the core mismatch — between how users think (in questions and exploration) and how the system retrieved information (through terms and tags)."</p>
+  </div>
+
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Stage 02</span></div>
+    <h2><em>Changing the foundation</em></h2>
+    <p class="sh-sub">From optimised keyword search to semantic understanding</p>
+  </div>
+  <div class="two reveal d1">
+    <div>
+      <div class="cell" style="margin-bottom:1.5px;"><p class="ck">What we introduced</p><p class="ct">Semantic search</p><ul class="cl"><li>Semantic search to understand intent behind natural-language questions</li><li>Concept-based relevance instead of strict term matching</li><li>AI-generated summaries to help users assess result relevance quickly</li></ul></div>
+      <div class="cell alt"><p class="ck">What this unlocked</p><p class="ct">Faster, more confident discovery</p><ul class="cl"><li>Users could start with questions, not keywords</li><li>Less time scanning articles to judge relevance</li><li>Search became a more reliable entry point into high-value content</li></ul></div>
+    </div>
+    <div>
+      <div class="cell" style="margin-bottom:1.5px;"><p class="ck">Design considerations</p><p class="ct">Interface principles</p><ul class="cl"><li>Designed the interface to encourage questions, not single keywords</li><li>Summaries positioned as entry points, not replacements for source content</li><li>Clear attribution and links back to original articles reinforced transparency</li></ul></div>
+      <div class="cell alt"><p class="ck">What this revealed</p><p class="ct">The next frontier</p><ul class="cl"><li>Users still needed to ask follow-up questions manually</li><li>Context was lost between separate searches</li><li>Users still had to compare perspectives and reason independently</li></ul></div>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Stage 03</span></div>
+    <h2><em>The next evolution</em></h2>
+    <p class="sh-sub">From answering questions to supporting decision journeys</p>
+  </div>
+  <div class="two reveal d1">
+    <div>
+      <div class="cell" style="margin-bottom:1.5px;"><p class="ck">What we observed</p><p class="ct">After semantic search</p><ul class="cl"><li>Users' questions evolved as they learned — each answer raised new, more specific questions</li><li>Context was lost between searches, forcing users to restate intent repeatedly</li><li>Users still had to connect insights and reason on their own</li></ul></div>
+      <div class="cell alt"><p class="ck">Why a multi-turn co-pilot</p><p class="ct">Real decisions are iterative</p><ul class="cl"><li>Real decisions are iterative and exploratory, not single-query events</li><li>A co-pilot retains context across turns and builds on previous responses</li><li>Supports follow-up and comparison without losing the thread</li></ul></div>
+    </div>
+    <div class="cell"><p class="ck">Design principles</p><p class="ct">Transparency &amp; user control</p><ul class="cl"><li>Transparency: responses are grounded in sources and assumptions are visible</li><li>User control: the co-pilot supports reasoning, not conclusions</li><li>Follow-up question suggestions surface naturally in the interface</li><li>AI attribution is always visible — users know what generated the answer</li></ul></div>
+  </div>
+
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Overview</span></div>
+    <h2>A deliberate progression from <em>retrieval to reasoning</em></h2>
+  </div>
+  <div class="tl reveal d1">
+    <div class="ts">
+      <p class="tsl">Stage 01</p><h3 class="tst">Keyword Search</h3><span class="tstag">Foundation problem</span>
+      <p class="tll-label">What we did</p>
+      <ul class="tll"><li>Improved Elasticsearch logic and relevance tuning</li><li>Refined filters and terminology</li><li>Added synonyms for varied user language</li></ul>
+      <div class="tdiv"></div>
+      <p class="tll-label">What we learned</p>
+      <ul class="tll"><li>Optimisation helped at the margins, but search still depended on keywords and prior knowledge</li></ul>
+    </div>
+    <div class="ts hi">
+      <p class="tsl">Stage 02</p><h3 class="tst">AI-Powered Semantic Search</h3><span class="tstag">Foundation fix</span>
+      <p class="tll-label">What changed</p>
+      <ul class="tll"><li>Enabled natural language, question-based queries</li><li>Shifted from term matching to intent and conceptual relevance</li><li>AI-generated summaries to surface key insights quickly</li></ul>
+      <div class="tdiv"></div>
+      <p class="tll-label">What this unlocked</p>
+      <ul class="tll"><li>Faster understanding and more confident discovery</li></ul>
+    </div>
+    <div class="ts">
+      <p class="tsl">Stage 03</p><h3 class="tst">Multi-turn Decision Co-pilot</h3><span class="tstag">Next evolution</span>
+      <p class="tll-label">What we're building</p>
+      <ul class="tll"><li>Supports iterative, multi-step questioning</li><li>Retains context across turns</li><li>Helps users explore, compare, and reason over time</li></ul>
+      <div class="tdiv"></div>
+      <p class="tll-label">Why this matters</p>
+      <ul class="tll"><li>Decisions happen over journeys, not single searches</li></ul>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">My role</span></div>
+    <h2>Leading the <em>evolution</em></h2>
+  </div>
+  <div class="rg reveal d1">
+    <div class="cell"><p class="ck">Strategy &amp; alignment</p><ul class="cl" style="margin-top:0.5rem;"><li>Defined the search evolution strategy and sequencing across all three stages</li><li>Led alignment across product, engineering, editorial, and leadership</li><li>Advocated for a measured, responsible adoption of AI</li><li>Facilitated trade-offs between feasibility, trust, and user needs</li></ul></div>
+    <div class="cell alt"><p class="ck">Design &amp; research</p><ul class="cl" style="margin-top:0.5rem;"><li>End-to-end UX design across all three stages</li><li>User research, usability testing, and analytics interpretation</li><li>Introduced synthetic user research methods to accelerate discovery</li><li>Maintained design fidelity through engineering delivery</li></ul></div>
+  </div>
+
+  <div class="og reveal">
+    <div class="oc"><div class="oi">↑</div><p class="ol">Search success rate</p><p class="od">Semantic search meaningfully reduced failed searches by enabling question-based, intent-driven queries.</p></div>
+    <div class="oc"><div class="oi">↓</div><p class="ol">Drop-off at search</p><p class="od">Improved relevance and faster insight surfacing reduced abandonment at a critical moment in the user journey.</p></div>
+    <div class="oc"><div class="oi">✦</div><p class="ol">Responsible AI adoption</p><p class="od">Built a transparent, source-grounded AI experience that maintained user trust through attribution and control.</p></div>
+  </div>
+
+  <div class="nav-f reveal">
+    <a href="index.html#work" class="nfc"><p class="nfd">← All work</p><p class="nft">Back to portfolio</p><span class="nfa">←</span></a>
+    <a href="case-study-design-system.html" class="nfc r"><p class="nfd">Next →</p><p class="nft">Design System &amp; UX Governance</p><span class="nfa">→</span></a>
+  </div>
+</div>
+
+<div class="gold-bar"></div>
+<footer><span class="fn">Sonal Bhagria</span><span class="fr">Lead Product Designer · Gurugram, India · 2025</span></footer>
+
+<script>
+  const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function animCursor(){cursor.style.transform=`translate(${mx-4}px,${my-4}px)`;rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.transform=`translate(${rx-16}px,${ry-16}px)`;requestAnimationFrame(animCursor);}
+  animCursor();
+  document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>ring.style.opacity='0.9');el.addEventListener('mouseleave',()=>ring.style.opacity='0.5');});
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+</script>
+</body>
+</html>
