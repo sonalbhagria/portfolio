@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homepage Redesign — Sonal Bhagria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --cream:#FAF7F2;--cream-dark:#F2EDE4;--cream-deeper:#E8E0D4;
+    --gold:#C8A96E;--gold-light:#DFC49A;--gold-dark:#A8894E;
+    --ink:#1C1814;--ink-soft:#3D3530;--muted:#7A6E64;--hint:#A89F95;
+    --border-soft:rgba(28,24,20,0.08);
+    --serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',sans-serif;
+  }
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  .cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
+  .cursor-ring{width:32px;height:32px;border:1px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:0.5;transition:opacity 0.2s;}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1);}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 4rem;transition:background 0.4s,border-bottom 0.4s;}
+  nav.scrolled{background:rgba(250,247,242,0.92);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border-soft);}
+  .nav-logo{font-family:var(--serif);font-size:17px;font-weight:300;letter-spacing:0.03em;color:var(--ink);text-decoration:none;}
+  .nav-back{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+  .nav-back:hover{color:var(--gold);}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:0 4rem;}
+  .hero{padding-top:9rem;padding-bottom:0;}
+  .crumb{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:2.5rem;}
+  .crumb a{color:var(--hint);text-decoration:none;transition:color 0.2s;}
+  .crumb a:hover{color:var(--gold);}
+  .crumb span{color:var(--gold-light);}
+  .eyebrow{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+  .eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--gold);}
+  h1{font-family:var(--serif);font-size:clamp(36px,5.5vw,66px);font-weight:300;line-height:1.06;letter-spacing:-0.02em;margin-bottom:1.75rem;max-width:820px;}
+  h1 em{font-style:italic;color:var(--gold-dark);}
+  .intro{font-size:15px;line-height:1.85;color:var(--muted);max-width:580px;margin-bottom:3rem;}
+  .status-pill{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 14px;background:var(--cream-dark);border:0.5px solid var(--border-soft);color:var(--muted);border-radius:1px;margin-bottom:2.5rem;}
+  .status-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+  .meta-row{display:flex;gap:0;flex-wrap:wrap;border-top:0.5px solid var(--border-soft);border-bottom:0.5px solid var(--border-soft);}
+  .mc{padding:1.75rem 2.5rem 1.75rem 0;margin-right:2.5rem;border-right:0.5px solid var(--border-soft);}
+  .mc:last-child{border-right:none;margin-right:0;}
+  .ml{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:5px;}
+  .mv{font-size:14px;color:var(--ink-soft);}
+
+  .body{padding-bottom:6rem;}
+  .rule{height:0.5px;background:var(--border-soft);margin:4rem 0 0;}
+  .gold-bar{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.4;}
+  .sh{padding:4rem 0 0;}
+  .pill{display:inline-flex;margin-bottom:1.5rem;}
+  .pill-tag{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;padding:5px 12px;border:0.5px solid var(--gold);color:var(--gold);border-radius:1px;}
+  h2{font-family:var(--serif);font-size:clamp(26px,3.5vw,42px);font-weight:300;line-height:1.15;letter-spacing:-0.01em;margin-bottom:0.75rem;}
+  h2 em{font-style:italic;}
+  .sh-sub{font-family:var(--serif);font-size:17px;font-weight:300;font-style:italic;color:var(--muted);margin-bottom:2.5rem;}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;padding:2.5rem 0;}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .six{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .cell{background:var(--cream);padding:2rem 1.75rem;}
+  .cell.alt{background:var(--cream-dark);}
+  .ck{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
+  .ct{font-family:var(--serif);font-size:17px;font-weight:400;line-height:1.3;margin-bottom:1rem;color:var(--ink);}
+  .cl{list-style:none;padding:0;}
+  .cl li{font-size:13px;line-height:1.75;color:var(--muted);padding-left:14px;position:relative;margin-bottom:4px;}
+  .cl li::before{content:'·';position:absolute;left:0;color:var(--gold);}
+  .prose{font-size:15px;line-height:1.9;color:var(--muted);}
+  .prose p{margin-bottom:1.25rem;}
+  .prose p:last-child{margin-bottom:0;}
+  .prose strong{font-weight:500;color:var(--ink-soft);}
+
+  /* QUOTE WITH LEFT BAR */
+  .bq{border-left:2px solid var(--gold);padding-left:1.25rem;margin:0.5rem 0 1.25rem;}
+  .bq p{font-size:14px;line-height:1.8;color:var(--muted);}
+
+  /* PULL QUOTE */
+  .quote{padding:3rem 0;display:grid;grid-template-columns:4px 1fr;gap:2rem;}
+  .qbar{background:var(--gold);}
+  .qt{font-family:var(--serif);font-size:clamp(18px,2.5vw,26px);font-weight:300;line-height:1.55;font-style:italic;color:var(--ink-soft);}
+
+  /* SCREEN FRAME */
+  .screen-frame{background:var(--cream-deeper);border-radius:6px;padding:10px 10px 6px;margin:2.5rem 0;border:0.5px solid var(--border-soft);}
+  .screen-bar{display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:0 4px;}
+  .screen-dot{width:8px;height:8px;border-radius:50%;background:var(--cream);border:0.5px solid var(--border-soft);}
+  .screen-url{flex:1;height:18px;background:var(--cream);border-radius:3px;border:0.5px solid var(--border-soft);}
+  .screen-frame img{width:100%;display:block;border-radius:3px;border:0.5px solid var(--border-soft);}
+  .screen-caption{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--hint);text-align:center;margin-top:10px;padding-bottom:4px;}
+
+  /* PLAIN IMAGE (full-bleed, no chrome) */
+  .img-block{margin:2.5rem 0;border:0.5px solid var(--border-soft);border-radius:4px;overflow:hidden;}
+  .img-block img{width:100%;display:block;}
+  .img-caption{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--hint);padding:10px 12px;background:var(--cream-dark);}
+
+  /* PROCESS STEPS */
+  .process-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .ps{background:var(--cream);padding:2rem 1.75rem;}
+  .ps.alt{background:var(--cream-dark);}
+  .ps-num{font-family:var(--serif);font-size:36px;font-weight:300;color:var(--gold-light);line-height:1;margin-bottom:0.75rem;}
+  .ps-title{font-size:13px;font-weight:500;letter-spacing:0.04em;margin-bottom:0.5rem;color:var(--ink);}
+  .ps-desc{font-size:12px;line-height:1.75;color:var(--muted);}
+
+  /* TOOLS ROW */
+  .tools-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:1rem;}
+  .tool{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:5px 12px;border:0.5px solid var(--border-soft);color:var(--muted);border-radius:1px;}
+  .tool.ai{border-color:var(--gold);color:var(--gold-dark);}
+
+  /* NAV FOOTER */
+  .nav-f{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin-top:4rem;}
+  .nfc{background:var(--cream);padding:2.5rem;text-decoration:none;color:var(--ink);transition:background 0.2s;}
+  .nfc:hover{background:var(--cream-dark);}
+  .nfd{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:8px;}
+  .nft{font-family:var(--serif);font-size:20px;font-weight:300;}
+  .nfa{font-size:18px;color:var(--gold);margin-top:12px;display:block;}
+  .nfc.r{text-align:right;}
+
+  footer{background:var(--ink);color:var(--hint);padding:2.5rem 4rem;display:flex;justify-content:space-between;align-items:center;}
+  .fn{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--cream-dark);}
+  .fr{font-size:11px;letter-spacing:0.06em;}
+
+  @media(max-width:900px){
+    nav,.wrap{padding-left:2rem;padding-right:2rem;}
+    .hero{padding-top:7rem;}
+    .two,.nav-f{grid-template-columns:1fr;}
+    .three,.six,.process-steps{grid-template-columns:1fr 1fr;}
+    footer{flex-direction:column;gap:1rem;text-align:center;padding:2rem;}
+  }
+  @media(max-width:600px){
+    .three,.six,.process-steps{grid-template-columns:1fr;}
+    .meta-row{flex-direction:column;}
+    .mc{border-right:none;border-bottom:0.5px solid var(--border-soft);padding:1.25rem 0;margin-right:0;}
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">Sonal Bhagria</a>
+  <a href="index.html#work" class="nav-back">← Back to work</a>
+</nav>
+
+<!-- HERO -->
+<div class="wrap hero">
+  <div class="crumb reveal"><a href="index.html">Home</a><span>/</span><span>Case study</span></div>
+  <div class="eyebrow reveal d1">EIU · Ongoing project</div>
+  <h1 class="reveal d2">Redesigning the homepage using <em>synthetic user research</em></h1>
+  <div class="status-pill reveal d3"><span class="status-dot"></span>Discovery phase · In progress</div>
+  <p class="intro reveal d3">An underutilised global homepage with a high bounce rate. Rather than waiting for access to real users, we used AI-powered synthetic research — interviewing 32 simulated user personas to uncover what the homepage needed to be.</p>
+  <div class="meta-row reveal d4">
+    <div class="mc"><p class="ml">Role</p><p class="mv">Lead Product Designer + UX Researcher</p></div>
+    <div class="mc"><p class="ml">Company</p><p class="mv">The Economist Intelligence Unit</p></div>
+    <div class="mc"><p class="ml">Status</p><p class="mv">Discovery phase — ongoing</p></div>
+    <div class="mc"><p class="ml">Method</p><p class="mv">Synthetic user research · AI-assisted</p></div>
+  </div>
+</div>
+
+<div class="wrap body">
+
+  <!-- PROBLEM -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Context</span></div>
+    <h2>A homepage that <em>wasn't working</em></h2>
+    <p class="sh-sub">Problem statement</p>
+  </div>
+  <div class="two reveal d1">
+    <div class="prose">
+      <p>The EIU's global homepage is a critical entry point for users across industries — from risk analysts and economists to business strategists and policy researchers. Yet the page was underutilised and failing to connect users to the content they came for.</p>
+      <p>Users primarily seek <strong>geography, industry, theme, and risk-level content</strong>, but the global page wasn't effectively surfacing any of these. The result was a high bounce rate at exactly the moment we needed to retain users.</p>
+      <p>The homepage now features <strong>AI Lens in beta</strong> — the multi-turn co-pilot built as part of the search evolution work — integrated directly into the home screen. This case study documents the discovery research that informed that direction.</p>
+    </div>
+    <div>
+      <div class="three" style="margin-top:0;">
+        <div class="cell">
+          <p class="ck">The problem</p>
+          <p class="ct">Underutilised &amp; high bounce</p>
+          <p style="font-size:13px;line-height:1.75;color:var(--muted);">The global homepage failed to meet user needs, leading to significant drop-off before users reached the content they needed.</p>
+        </div>
+        <div class="cell alt">
+          <p class="ck">Opportunity</p>
+          <p class="ct">Increased engagement &amp; retention</p>
+          <p style="font-size:13px;line-height:1.75;color:var(--muted);">A well-redesigned homepage could improve retention, credibility, and support EIU's pivot toward financial services.</p>
+        </div>
+        <div class="cell">
+          <p class="ck">Risk</p>
+          <p class="ct">Diverse needs, complex personalisation</p>
+          <p style="font-size:13px;line-height:1.75;color:var(--muted);">The challenge: implementing a personalised experience that serves every user segment without becoming irrelevant to any.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-frame reveal">
+    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
+    <img src="cs2-homepage-current.png" alt="Current EIU homepage — global view">
+    <p class="screen-caption">Current state — the EIU Viewpoint homepage, now featuring AI Lens (beta) integrated directly into the home screen</p>
+  </div>
+
+  <!-- SYNTHETIC RESEARCH INTRO -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Research approach</span></div>
+    <h2>User research <em>without users</em></h2>
+    <p class="sh-sub">Synthetic user research</p>
+  </div>
+
+  <div class="quote reveal">
+    <div class="qbar"></div>
+    <p class="qt">"The highlight of this project is that we used our AI capabilities and conducted Synthetic user research — a user research without users."</p>
+  </div>
+
+  <div class="two reveal d1">
+    <div>
+      <div class="cell" style="margin-bottom:1.5px;">
+        <p class="ck">Who are synthetic users?</p>
+        <div class="bq"><p>A synthetic user is an AI-generated profile that attempts to mimic a user group, providing artificial research findings produced without studying real users. A synthetic user will express simulated thoughts, needs, and experiences.</p></div>
+      </div>
+      <div class="cell alt">
+        <p class="ck">How to use the findings</p>
+        <div class="bq"><p>We treat insights produced by synthetic users as <strong>hypotheses that need testing</strong> — directional signals to guide design decisions, not validated truth.</p></div>
+      </div>
+    </div>
+    <div>
+      <div class="cell" style="margin-bottom:1.5px;">
+        <p class="ck">How did we do it?</p>
+        <div class="bq"><p>We created <strong>PersonaGPT</strong> — a custom GPT — to simulate our users for synthetic interviews. By inputting data on industries, organisations, and roles of actual Viewpoint users, PersonaGPT generated representative synthetic users, enriching them with its knowledge of various industries and roles. This gave us control over the user profiles while leveraging broad AI expertise.</p></div>
+      </div>
+      <div class="cell alt">
+        <p class="ck">Resources used</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:0.75rem;">AI tools</p>
+        <div class="tools-row">
+          <span class="tool ai">ChatGPT</span>
+          <span class="tool ai">NotebookLM</span>
+          <span class="tool ai">Research insights hub</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-top:1rem;margin-bottom:0.75rem;">Other tools</p>
+        <div class="tools-row">
+          <span class="tool">Miro</span>
+          <span class="tool">Google Sheets</span>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:1.25rem;line-height:1.7;">We also reviewed analytics dashboards and client feedback sheets to verify the analysis against real behavioural data.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROCESS -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Process</span></div>
+    <h2>Six steps from <em>setup to synthesis</em></h2>
+    <p class="sh-sub">What was the process?</p>
+  </div>
+
+  <div class="process-steps reveal d1">
+    <div class="ps">
+      <div class="ps-num">01</div>
+      <p class="ps-title">Learnt about Custom GPT</p>
+      <p class="ps-desc">Custom GPT Persona Bot was used. Initially invested time learning how to configure and use it effectively for user simulation.</p>
+    </div>
+    <div class="ps alt">
+      <div class="ps-num">02</div>
+      <p class="ps-title">Created discussion guide</p>
+      <p class="ps-desc">Questions were drafted to create foundational knowledge of role, build context about platform usage, and learn about homepage preferences across user types.</p>
+    </div>
+    <div class="ps">
+      <div class="ps-num">03</div>
+      <p class="ps-title">Conducted interviews</p>
+      <p class="ps-desc">Interviews were conducted in the same structured way for all <strong>32 synthetic users</strong> — ensuring consistency across the research corpus.</p>
+    </div>
+    <div class="ps alt">
+      <div class="ps-num">04</div>
+      <p class="ps-title">Downloaded transcripts</p>
+      <p class="ps-desc">At the end of each interview, the transcript was downloaded to be fed into NotebookLM for subsequent AI-assisted analysis.</p>
+    </div>
+    <div class="ps">
+      <div class="ps-num">05</div>
+      <p class="ps-title">Started manual analysis</p>
+      <p class="ps-desc">Used Google Sheets and Miro to manually analyse initial findings — building a first layer of insight before applying AI tools.</p>
+    </div>
+    <div class="ps alt">
+      <div class="ps-num">06</div>
+      <p class="ps-title">Used NotebookLM for synthesis</p>
+      <p class="ps-desc">All 32 interview transcripts were fed into NotebookLM. Research analysis was then conducted by asking targeted questions — surfacing patterns across users at scale.</p>
+    </div>
+  </div>
+
+  <div class="img-block reveal">
+    <img src="cs2-analysis.png" alt="NotebookLM research analysis output">
+    <p class="img-caption">Research analysis — NotebookLM output showing key takeaways and unique needs of users by role</p>
+  </div>
+
+  <!-- KEY FINDINGS -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Findings</span></div>
+    <h2>What the research <em>revealed</em></h2>
+    <p class="sh-sub">Key takeaways from 32 synthetic interviews</p>
+  </div>
+
+  <div class="three reveal d1">
+    <div class="cell">
+      <p class="ck">All users</p>
+      <p class="ct">Shared needs across roles</p>
+      <ul class="cl">
+        <li>Personalisation — homepage that prioritises their specific context</li>
+        <li>Actionable insights — not just data, but what it means</li>
+        <li>Streamlined navigation to reach relevant content quickly</li>
+      </ul>
+    </div>
+    <div class="cell alt">
+      <p class="ck">Role-based differences</p>
+      <p class="ct">Different parameters of usage</p>
+      <ul class="cl">
+        <li>Risk Management focuses on risk assessments, market factors, geopolitical content</li>
+        <li>Strategy professionals prioritise market data, industry comparisons, growth insights</li>
+        <li>Financial services users need country-level economic indicators</li>
+      </ul>
+    </div>
+    <div class="cell">
+      <p class="ck">Homepage direction</p>
+      <p class="ct">What the redesign needs</p>
+      <ul class="cl">
+        <li>Personalised entry points based on role and geography</li>
+        <li>Surfacing EIU's analytical layer, not just raw content</li>
+        <li>Clearer pathways to reports, risk data, and industry-specific content</li>
+        <li>Reduced cognitive load on arrival</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STATUS & NEXT STEPS -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Status</span></div>
+    <h2>Where we are <em>now</em></h2>
+    <p class="sh-sub">Discovery phase — in progress</p>
+  </div>
+
+  <div class="two reveal d1">
+    <div class="prose">
+      <p>This is an ongoing project. The synthetic research phase has completed and we now have a rich set of directional hypotheses to carry forward into the design phase.</p>
+      <p>Next steps include <strong>validating key findings</strong> with real users through targeted usability sessions, then translating insights into wireframes and a redesigned homepage concept.</p>
+    </div>
+    <div class="cell alt">
+      <p class="ck">What comes next</p>
+      <ul class="cl" style="margin-top:0.5rem;">
+        <li>Validate synthetic research findings with real user interviews</li>
+        <li>Define homepage personalisation model by role and geography</li>
+        <li>Wireframe and prototype the redesigned homepage</li>
+        <li>Test with users and iterate before engineering handoff</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- NAV FOOTER -->
+  <div class="nav-f reveal">
+    <a href="index.html#work" class="nfc"><p class="nfd">← All work</p><p class="nft">Back to portfolio</p><span class="nfa">←</span></a>
+    <a href="case-study-search-copilot.html" class="nfc r"><p class="nfd">Related →</p><p class="nft">Search to AI Co-pilot</p><span class="nfa">→</span></a>
+  </div>
+
+</div>
+
+<div class="gold-bar"></div>
+<footer><span class="fn">Sonal Bhagria</span><span class="fr">Lead Product Designer · Gurugram, India · 2025</span></footer>
+
+<script>
+  const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function animCursor(){cursor.style.transform=`translate(${mx-4}px,${my-4}px)`;rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.transform=`translate(${rx-16}px,${ry-16}px)`;requestAnimationFrame(animCursor);}
+  animCursor();
+  document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>ring.style.opacity='0.9');el.addEventListener('mouseleave',()=>ring.style.opacity='0.5');});
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+</script>
+</body>
+</html>
