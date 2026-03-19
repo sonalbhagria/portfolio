@@ -9,13 +9,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  :root{
-    --cream:#FAF7F2;--cream-dark:#F2EDE4;--cream-deeper:#E8E0D4;
-    --gold:#C8A96E;--gold-light:#DFC49A;--gold-dark:#A8894E;
-    --ink:#1C1814;--ink-soft:#3D3530;--muted:#7A6E64;--hint:#A89F95;
-    --border-soft:rgba(28,24,20,0.08);
-    --serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',sans-serif;
-  }
+  :root {
+  --cream:        #FFFFFF;
+  --cream-deeper: #FBF5F0;
+  --cream-dark:   #F7F7F7;
+  --ink:          #1C1814;
+  --ink-soft:     #3D3530;
+  --muted:        #777777;
+  --hint:         #AAAAAA;
+  --gold:         #C4521A;
+  --gold-light:   #D97A45;
+  --border-soft:  #E8E8E8;
+  --serif:        'Cormorant Garamond', Georgia, serif;
+  --sans:         'DM Sans', sans-serif;
+}
   html{scroll-behavior:smooth;}
   body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;}
   .cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
@@ -25,7 +32,7 @@
   .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
 
   nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 4rem;transition:background 0.4s,border-bottom 0.4s;}
-  nav.scrolled{background:rgba(250,247,242,0.92);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border-soft);}
+  nav.scrolled{background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border-soft);}
   .nav-logo{font-family:var(--serif);font-size:17px;font-weight:300;letter-spacing:0.03em;color:var(--ink);text-decoration:none;}
   .nav-back{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;}
   .nav-back:hover{color:var(--gold);}
@@ -367,7 +374,7 @@
 </div>
 
 <div class="gold-bar"></div>
-<footer><span class="fn">Sonal Bhagria</span><span class="fr">Lead Product Designer · Gurugram, India · 2025</span></footer>
+<footer><span class="fn">Sonal Bhagria</span><span class="fr">Lead Product Designer · Gurugram, India · 2026</span></footer>
 
 <script>
   const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
