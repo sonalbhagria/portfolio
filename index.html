@@ -28,12 +28,18 @@
   }
   html { scroll-behavior: smooth; }
   body { font-family: var(--sans); background: var(--cream); color: var(--ink); overflow-x: hidden; }
+ @media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .cursor, .cursor-ring { display: none; }
+}
   .cursor { width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply; }
   .cursor-ring { width:32px;height:32px;border:1px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:0.5;transition:opacity 0.2s; }
   .reveal { opacity:0;transform:translateY(28px);transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1); }
   .reveal.visible { opacity:1;transform:translateY(0); }
   .reveal-delay-1{transition-delay:0.1s}.reveal-delay-2{transition-delay:0.2s}.reveal-delay-3{transition-delay:0.3s}.reveal-delay-4{transition-delay:0.4s}
-
+*:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
  @media (prefers-reduced-motion: reduce) {
   .reveal {
     transition: none;
@@ -165,6 +171,7 @@
 
   /* RESPONSIVE */
   @media(max-width:900px){
+   .ib-grid { grid-template-columns: 1fr !important; }
     nav { padding:1.25rem 2rem; }
     .nav-links { display:none; }
     .nav-links.open { display:flex;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--cream);align-items:center;justify-content:center;z-index:99;gap:2rem; }
@@ -260,7 +267,7 @@
       </div>
       <div class="case-featured-body">
         <p class="case-num">Featured · A leading B2B intelligence platform · 2023–2026</p>
-        <span style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;background:var(--cream-deeper);border:0.5px solid var(--gold);color:var(--gold);border-radius:1px;display:inline-block;margin-bottom:1.25rem;">Launching this week</span>
+        <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;background:var(--cream-deeper);border:0.5px solid var(--gold);color:var(--gold);border-radius:1px;display:inline-block;margin-bottom:1.25rem;">Launching this week</span>
         <h3 class="case-title">From broken keyword search to a multi-turn AI co-pilot</h3>
         <p class="case-desc">Search drove 10%+ of all sessions — yet 57% failed and 33% of users left the platform. I led a three-stage evolution: diagnosing structural failure, making the case for semantic AI, and designing a context-aware decision companion for 930+ organisations across 60 countries.</p>
         <div class="case-meta">
@@ -383,21 +390,21 @@
 
 <!-- CLIENT: INDIABULLS -->
 <div class="reveal" style="margin-top:3rem;">
-  <p style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Client · Indiabulls Securities</p>
-  <div style="display:grid;grid-template-columns:350px 1fr;border:0.5px solid var(--border-soft);overflow:hidden;">
+  <p style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Client · Indiabulls Securities</p>
+<div style="display:grid;grid-template-columns:350px 1fr;border:0.5px solid var(--border-soft);overflow:hidden;" class="ib-grid">
 
     <!-- LEFT: TEXT -->
     <div style="background:#1C1814;padding:44px 36px;display:flex;flex-direction:column;justify-content:top;">
-      <p style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+      <p style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
         <span style="display:block;width:20px;height:1px;background:var(--gold);flex-shrink:0;"></span>iOS · Fintech
       </p>
       <h3 style="font-family:var(--serif);font-size:28px;font-weight:300;line-height:1.1;color:#F5F0EA;margin-bottom:14px;">Mobile trading app<br>for <em style="font-style:italic;color:var(--gold-light);">iOS</em></h3>
       <p style="font-size:12px;line-height:1.85;color:rgba(245,240,234,0.5);margin-bottom:24px;">A full-featured stock trading app for Indiabulls Securities — covering login, market watch, portfolio, alerts, and order placement across phone and tablet.</p>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
-        <span style="font-size:9px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border:0.5px solid rgba(245,240,234,0.15);color:rgba(245,240,234,0.4);border-radius:1px;">iOS</span>
-        <span style="font-size:9px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border:0.5px solid rgba(245,240,234,0.15);color:rgba(245,240,234,0.4);border-radius:1px;">Tablet</span>
-        <span style="font-size:9px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border:0.5px solid rgba(245,240,234,0.15);color:rgba(245,240,234,0.4);border-radius:1px;">Fintech</span>
-        <span style="font-size:9px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border:0.5px solid rgba(245,240,234,0.15);color:rgba(245,240,234,0.4);border-radius:1px;">Trading UI</span>
+        <span style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border:0.5px solid rgba(245,240,234,0.15);color:rgba(245,240,234,0.4);border-radius:1px;">iOS</span>
+        <span style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border:0.5px solid rgba(245,240,234,0.15);color:rgba(245,240,234,0.4);border-radius:1px;">Tablet</span>
+        <span style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border:0.5px solid rgba(245,240,234,0.15);color:rgba(245,240,234,0.4);border-radius:1px;">Fintech</span>
+        <span style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border:0.5px solid rgba(245,240,234,0.15);color:rgba(245,240,234,0.4);border-radius:1px;">Trading UI</span>
       </div>
     </div>
 
@@ -552,7 +559,12 @@
   document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
   const tog=document.getElementById('navToggle'),nav=document.getElementById('navLinks');
-  tog.addEventListener('click',()=>nav.classList.toggle('open'));
+tog.setAttribute('aria-expanded','false');
+tog.addEventListener('click',()=>{
+  const isOpen = nav.classList.toggle('open');
+  tog.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  if(isOpen) nav.querySelector('a').focus();
+});
   nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
  document.getElementById('phone-num').textContent = '+91 ' + '99997' + '93270';
 
