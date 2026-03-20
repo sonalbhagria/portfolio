@@ -22,7 +22,13 @@
   --serif:        'Cormorant Garamond', Georgia, serif;
   --sans:         'DM Sans', sans-serif;
 }
-
+@media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .cursor, .cursor-ring { display: none; }
+}
+    *:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html { scroll-behavior: smooth; }
