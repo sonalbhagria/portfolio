@@ -10,20 +10,20 @@
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   :root {
-  --cream:        #FFFFFF;
-  --cream-deeper: #FBF5F0;
-  --cream-dark:   #F7F7F7;
-  --ink:          #1C1814;
-  --ink-soft:     #3D3530;
-  --muted:        #777777;
-  --hint:         #AAAAAA;
-  --gold:         #C4521A;
-  --gold-light:   #D97A45;
-  --gold-dark:    #9E3E10;
-  --border-soft:  #E8E8E8;
-  --serif:        'Cormorant Garamond', Georgia, serif;
-  --sans:         'DM Sans', sans-serif;
-}
+    --cream:        #FFFFFF;
+    --cream-deeper: #FBF5F0;
+    --cream-dark:   #F7F7F7;
+    --ink:          #1C1814;
+    --ink-soft:     #3D3530;
+    --muted:        #777777;
+    --hint:         #AAAAAA;
+    --gold:         #C4521A;
+    --gold-light:   #D97A45;
+    --gold-dark:    #9E3E10;
+    --border-soft:  #E8E8E8;
+    --serif:        'Cormorant Garamond', Georgia, serif;
+    --sans:         'DM Sans', sans-serif;
+  }
   html{scroll-behavior:smooth;}
   body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;}
   .cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
@@ -33,10 +33,11 @@
   .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
   nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 4rem;transition:background 0.4s,border-bottom 0.4s;}
   nav.scrolled{background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border-soft);}
-  .nav-logo{font-family:var(--serif);font-size:17px;font-weight:300;letter-spacing:0.03em;color:var(--ink);text-decoration:none;}
   .nav-back{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;}
   .nav-back:hover{color:var(--gold);}
   .wrap{max-width:1100px;margin:0 auto;padding:0 4rem;}
+  .gold-bar{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.25;}
+  .rule{height:0.5px;background:var(--border-soft);margin:4rem 0 0;}
   .hero{padding-top:9rem;padding-bottom:0;}
   .crumb{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:2.5rem;}
   .crumb a{color:var(--hint);text-decoration:none;transition:color 0.2s;}
@@ -46,15 +47,19 @@
   .eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--gold);}
   h1{font-family:var(--serif);font-size:clamp(36px,5.5vw,66px);font-weight:300;line-height:1.06;letter-spacing:-0.02em;margin-bottom:1.75rem;max-width:820px;}
   h1 em{font-style:italic;color:var(--gold-dark);}
-  .intro{font-size:15px;line-height:1.85;color:var(--muted);max-width:580px;margin-bottom:3rem;}
+  .intro{font-size:15px;line-height:1.85;color:var(--muted);max-width:600px;margin-bottom:3rem;}
   .meta-row{display:flex;gap:0;flex-wrap:wrap;border-top:0.5px solid var(--border-soft);border-bottom:0.5px solid var(--border-soft);}
   .mc{padding:1.75rem 2.5rem 1.75rem 0;margin-right:2.5rem;border-right:0.5px solid var(--border-soft);}
   .mc:last-child{border-right:none;margin-right:0;}
   .ml{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:5px;}
   .mv{font-size:14px;color:var(--ink-soft);}
+  .impact-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5px;background:var(--border-soft);margin:4rem 0 0;}
+  .ib-cell{background:var(--cream-deeper);padding:2.5rem 2rem;}
+  .ib-num{font-family:var(--serif);font-size:52px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:6px;}
+  .ib-num sup{font-size:24px;vertical-align:super;}
+  .ib-label{font-size:12px;font-weight:500;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:4px;}
+  .ib-desc{font-size:12px;color:var(--muted);line-height:1.6;}
   .body{padding-bottom:6rem;}
-  .rule{height:0.5px;background:var(--border-soft);margin:4rem 0 0;}
-  .gold-bar{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.4;}
   .sh{padding:4rem 0 0;}
   .pill{display:inline-flex;align-items:center;margin-bottom:1.5rem;}
   .pill-tag{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;padding:5px 12px;border:0.5px solid var(--gold);color:var(--gold);border-radius:1px;}
@@ -77,35 +82,37 @@
   .quote{padding:3rem 0;display:grid;grid-template-columns:4px 1fr;gap:2rem;}
   .qbar{background:var(--gold);}
   .qt{font-family:var(--serif);font-size:clamp(18px,2.5vw,26px);font-weight:300;line-height:1.55;font-style:italic;color:var(--ink-soft);}
-  .impact{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border-soft);margin:3.5rem 0 0;}
-  .ic{background:var(--cream-deeper);padding:2.5rem 2rem;text-align:center;}
-  .in{font-family:var(--serif);font-size:52px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:6px;}
-  .in sup{font-size:26px;vertical-align:super;}
-  .il{font-size:12px;font-weight:500;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:4px;}
-  .id{font-size:12px;color:var(--muted);line-height:1.6;}
+  .stage{border:0.5px solid var(--border-soft);margin:2.5rem 0;overflow:hidden;}
+  .stage-header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;padding:2rem 2.5rem;border-bottom:0.5px solid var(--border-soft);background:var(--cream-dark);}
+  .stage-num{font-family:var(--serif);font-size:48px;font-weight:300;color:var(--gold-light);line-height:1;}
+  .stage-title{font-family:var(--serif);font-size:24px;font-weight:300;color:var(--ink);}
+  .stage-title em{font-style:italic;}
+  .stage-tag{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;background:var(--cream-deeper);color:var(--hint);border-radius:1px;white-space:nowrap;}
+  .stage-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);}
+  .stage-cell{background:var(--cream);padding:2rem 1.75rem;}
+  .stage-cell.alt{background:var(--cream-dark);}
+  .stage-cell.outcome{background:var(--cream-deeper);}
+  .sc-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
+  .sc-title{font-family:var(--serif);font-size:16px;font-weight:400;line-height:1.3;margin-bottom:1rem;color:var(--ink);}
   .screen-frame{background:var(--cream-deeper);border-radius:6px;padding:10px 10px 6px;margin:2.5rem 0;border:0.5px solid var(--border-soft);}
   .screen-bar{display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:0 4px;}
   .screen-dot{width:8px;height:8px;border-radius:50%;background:var(--cream-deeper);border:0.5px solid var(--border-soft);}
   .screen-url{flex:1;height:18px;background:var(--cream);border-radius:3px;border:0.5px solid var(--border-soft);}
   .screen-frame img{width:100%;display:block;border-radius:3px;border:0.5px solid var(--border-soft);}
   .screen-caption{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--hint);text-align:center;margin-top:10px;padding-bottom:4px;}
-  .tl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2.5rem 0;}
-  .ts{background:var(--cream);padding:2.5rem 2rem;}
-  .ts.hi{background:var(--cream-dark);}
-  .tsl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
-  .tst{font-family:var(--serif);font-size:19px;font-weight:300;line-height:1.2;margin-bottom:0.5rem;}
-  .tstag{font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;background:var(--cream-deeper);color:var(--hint);border-radius:1px;display:inline-block;margin-bottom:1.25rem;}
-  .tll{list-style:none;padding:0;}
-  .tll li{font-size:12px;line-height:1.7;color:var(--muted);padding-left:14px;position:relative;margin-bottom:3px;}
-  .tll li::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:10px;top:2px;}
-  .tdiv{width:100%;height:0.5px;background:var(--border-soft);margin:1.25rem 0;}
-  .tll-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:8px;}
-  .rg{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
-  .og{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .outcomes{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border-soft);margin:2rem 0;}
   .oc{background:var(--cream-dark);padding:2.5rem 2rem;}
-  .oi{font-family:var(--serif);font-size:34px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:10px;}
+  .oi{font-family:var(--serif);font-size:42px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:10px;}
   .ol{font-size:13px;font-weight:500;letter-spacing:0.03em;color:var(--ink-soft);margin-bottom:6px;}
   .od{font-size:12px;line-height:1.75;color:var(--muted);}
+  .reflection{background:var(--cream-deeper);border:0.5px solid var(--border-soft);padding:3rem;margin:3rem 0;}
+  .ref-kicker{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;display:flex;align-items:center;gap:10px;}
+  .ref-kicker::before{content:'';width:20px;height:1px;background:var(--gold);}
+  .ref-title{font-family:var(--serif);font-size:26px;font-weight:300;line-height:1.2;margin-bottom:1.5rem;}
+  .ref-title em{font-style:italic;}
+  .nda{border-top:0.5px solid var(--border-soft);padding:1.5rem 0;margin-top:4rem;}
+  .nda p{font-size:11px;color:var(--hint);line-height:1.7;max-width:700px;}
+  .nda strong{font-weight:500;color:var(--muted);}
   .nav-f{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin-top:4rem;}
   .nfc{background:var(--cream);padding:2.5rem;text-decoration:none;color:var(--ink);transition:background 0.2s;}
   .nfc:hover{background:var(--cream-dark);}
@@ -119,12 +126,15 @@
   @media(max-width:900px){
     nav,.wrap{padding-left:2rem;padding-right:2rem;}
     .hero{padding-top:7rem;}
-    .two,.rg,.nav-f{grid-template-columns:1fr;}
-    .three,.tl,.impact,.og{grid-template-columns:1fr 1fr;}
+    .impact-bar{grid-template-columns:1fr 1fr;}
+    .two,.nav-f{grid-template-columns:1fr;}
+    .three,.stage-body,.outcomes{grid-template-columns:1fr 1fr;}
+    .stage-header{grid-template-columns:auto 1fr;gap:1rem;}
+    .stage-tag{display:none;}
     footer{flex-direction:column;gap:1rem;text-align:center;padding:2rem;}
   }
   @media(max-width:600px){
-    .three,.tl,.impact,.og{grid-template-columns:1fr;}
+    .three,.stage-body,.outcomes,.impact-bar{grid-template-columns:1fr;}
     .meta-row{flex-direction:column;}
     .mc{border-right:none;border-bottom:0.5px solid var(--border-soft);padding:1.25rem 0;margin-right:0;}
   }
@@ -133,165 +143,353 @@
 <body>
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
+ 
 <nav id="navbar">
-  <a href="index.html" class="nav-logo">Sonal Bhagria</a>
-  <a href="index.html#work" class="nav-back">← Back to work</a>
+  <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;font-family:'DM Sans',sans-serif;">
+    <span style="font-size:20px;font-weight:200;color:var(--ink);">S</span>
+    <span style="width:1.5px;height:16px;background:var(--gold);"></span>
+    <span style="font-size:20px;font-weight:500;color:var(--ink);">B</span>
+  </a>
+  <a href="index.html#case-studies" class="nav-back">← Back to work</a>
 </nav>
-
+ 
+<!-- HERO -->
 <div class="wrap hero">
   <div class="crumb reveal"><a href="index.html">Home</a><span>/</span><span>Case study</span></div>
-  <div class="eyebrow reveal d1">EIU · Featured project</div>
-  <h1 class="reveal d2">Evolving a traditional search into a <em>multi-turn AI co-pilot</em></h1>
-  <p class="intro reveal d3">A three-stage design journey — from fixing keyword search, to semantic understanding, to a context-aware decision companion built for global business and policy audiences.</p>
+  <div class="eyebrow reveal d1">A leading B2B intelligence platform · 2023–2026</div>
+  <h1 class="reveal d2">From broken keyword search to a <em>multi-turn AI decision co-pilot</em> — a three-stage evolution</h1>
+  <p class="intro reveal d3">Search was the most-used feature on the platform and one of the most broken. I led a three-stage design evolution — from diagnosing and patching a failing keyword system, to replacing it with semantic understanding, to building a context-aware AI reasoning companion for global business and policy audiences.</p>
   <div class="meta-row reveal d4">
-    <div class="mc"><p class="ml">Role</p><p class="mv">Lead Product Designer + UX Researcher</p></div>
-    <div class="mc"><p class="ml">Company</p><p class="mv">The Economist Intelligence Unit</p></div>
-    <div class="mc"><p class="ml">Scope</p><p class="mv">Search · AI · Product Strategy</p></div>
-    <div class="mc"><p class="ml">Stages</p><p class="mv">3 — Keyword → Semantic → Co-pilot</p></div>
+    <div class="mc"><p class="ml">My role</p><p class="mv">Lead Product Designer — strategy, research, end-to-end UX</p></div>
+    <div class="mc"><p class="ml">Timeline</p><p class="mv">2023–2026 · Three stages</p></div>
+    <div class="mc"><p class="ml">Audience</p><p class="mv">930+ organisations · 60+ countries</p></div>
+    <div class="mc"><p class="ml">Scope</p><p class="mv">Search · AI · Product strategy · Cross-functional leadership</p></div>
   </div>
 </div>
-
+ 
+<!-- IMPACT BAR -->
+<div class="wrap">
+  <div class="impact-bar reveal">
+    <div class="ib-cell">
+      <p class="ib-num">10<sup>%+</sup></p>
+      <p class="ib-label">Of all platform sessions</p>
+      <p class="ib-desc">Search was the highest-traffic feature — making its failure disproportionately costly</p>
+    </div>
+    <div class="ib-cell">
+      <p class="ib-num">57<sup>%</sup></p>
+      <p class="ib-label">Searches failed</p>
+      <p class="ib-desc">More than half of all searches did not connect users to relevant content</p>
+    </div>
+    <div class="ib-cell">
+      <p class="ib-num">33<sup>%</sup></p>
+      <p class="ib-label">Drop-off at search</p>
+      <p class="ib-desc">One in three search sessions ended with the user leaving the platform entirely</p>
+    </div>
+    <div class="ib-cell">
+      <p class="ib-num">7<sup>%</sup></p>
+      <p class="ib-label">Semantic search baseline</p>
+      <p class="ib-desc">Monthly active engagement established by AI semantic search — the benchmark the co-pilot must exceed</p>
+    </div>
+  </div>
+</div>
+ 
 <div class="wrap body">
-
-  <div class="impact reveal">
-    <div class="ic"><div class="in">33<sup>%</sup></div><p class="il">Drop-off rate</p><p class="id">of search-led sessions ended with users leaving at a critical moment</p></div>
-    <div class="ic"><div class="in">57<sup>%</sup></div><p class="il">Unsuccessful searches</p><p class="id">of searches failed to connect users to relevant content</p></div>
-    <div class="ic"><div class="in">84<sup>%</sup></div><p class="il">Used no filters</p><p class="id">of searches relied on the keyword bar alone — the filter UX wasn't working</p></div>
-  </div>
-
+ 
+  <!-- THE BRIEF -->
   <div class="rule"></div>
   <div class="sh reveal">
-    <div class="pill"><span class="pill-tag">Context</span></div>
-    <h2>Search was a critical entry point, but <em>wasn't reliably connecting users to value</em></h2>
-    <p class="sh-sub">Context &amp; business problem</p>
+    <div class="pill"><span class="pill-tag">The brief</span></div>
+    <h2>A broken experience at the <em>most critical moment</em> in the user journey</h2>
+    <p class="sh-sub">Stakes and business context</p>
   </div>
   <div class="two reveal d1">
-    <div class="prose"><p>Search was the primary way users accessed high-value EIU reports and analysis. Users came with clear intent — often looking for specific reports or countries. The content was strong, but the discovery experience hadn't kept pace with scale.</p><p>Search accounted for <strong>10%+ of all sessions</strong>, making it one of the most critical user journeys on the platform. But research and analytics showed it wasn't meeting expectations around relevance and speed.</p></div>
-    <div class="prose"><p>The mismatch was structural: users thought in questions and concepts, but the system retrieved through terms and tags. No amount of UI polish could bridge that gap.</p><p>This case study documents the three-stage evolution I led — from fixing the foundation, to changing it, to extending it into a multi-turn reasoning companion.</p></div>
-  </div>
-
-  <div class="rule"></div>
-  <div class="sh reveal">
-    <div class="pill"><span class="pill-tag">Stage 01</span></div>
-    <h2><em>Fixing the foundation</em></h2>
-    <p class="sh-sub">Optimising keyword search — and understanding its limits</p>
-  </div>
-  <div class="three reveal d1">
-    <div class="cell"><p class="ck">What we did</p><p class="ct">Improving the existing system</p><ul class="cl"><li>Refined Elasticsearch logic to improve ranking and reduce noise</li><li>Redesigned filter experience to improve clarity and terminology</li><li>Introduced synonyms to account for varied user language</li><li>Added snippets to all articles for better scanning</li></ul></div>
-    <div class="cell alt"><p class="ck">What improved</p><p class="ct">Short-term gains</p><ul class="cl"><li>Some reduction in irrelevant results for known queries</li><li>Slightly better use of filters once terminology was clarified</li><li>Marginal improvement in search consistency</li></ul></div>
-    <div class="cell"><p class="ck">What still didn't work</p><p class="ct">The structural limitation</p><ul class="cl"><li>Drop-off rate was still 33%</li><li>Success rate remained unchanged</li><li>Question-based queries continued to perform poorly</li><li>Users still depended on knowing how the system worked</li></ul></div>
-  </div>
-  <div class="screen-frame reveal">
-    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
-    <img src="stage-1-keyword-search.png" alt="EIU keyword search results — Stage 1">
-    <p class="screen-caption">Stage 1 — Optimised keyword search results page</p>
-  </div>
-
-  <div class="quote reveal">
-    <div class="qbar"></div>
-    <p class="qt">"Incremental fixes could not address the core mismatch — between how users think (in questions and exploration) and how the system retrieved information (through terms and tags)."</p>
-  </div>
-
-  <div class="rule"></div>
-  <div class="sh reveal">
-    <div class="pill"><span class="pill-tag">Stage 02</span></div>
-    <h2><em>Changing the foundation</em></h2>
-    <p class="sh-sub">From optimised keyword search to semantic understanding</p>
-  </div>
-  <div class="two reveal d1">
-    <div>
-      <div class="cell" style="margin-bottom:1.5px;"><p class="ck">What we introduced</p><p class="ct">Semantic search</p><ul class="cl"><li>Semantic search to understand intent behind natural-language questions</li><li>Concept-based relevance instead of strict term matching</li><li>AI-generated summaries to help users assess result relevance quickly</li></ul></div>
-      <div class="cell alt"><p class="ck">What this unlocked</p><p class="ct">Faster, more confident discovery</p><ul class="cl"><li>Users could start with questions, not keywords</li><li>Less time scanning articles to judge relevance</li><li>Search became a more reliable entry point into high-value content</li></ul></div>
+    <div class="prose">
+      <p>The platform serves economists, risk analysts, and policy strategists at 930+ organisations across 60+ countries. These are expert users under time pressure. Search was their primary way of reaching high-value intelligence — and it was failing more than half the time.</p>
+      <p>The numbers told a clear story: <strong>57% of searches failed</strong> to surface relevant content, <strong>33% of users dropped off entirely</strong> at the search step, and <strong>84% relied on the keyword bar alone</strong> because the filter system was too confusing to use. A feature accounting for more than 10% of all sessions was actively damaging the platform's core value proposition.</p>
+      <p>The business risk was compounded by the audience. When an economist at a central bank or a risk director at a Fortune 500 hits three dead ends in search, they don't submit a support ticket — they close the tab and question the subscription renewal.</p>
     </div>
-    <div>
-      <div class="cell" style="margin-bottom:1.5px;"><p class="ck">Design considerations</p><p class="ct">Interface principles</p><ul class="cl"><li>Designed the interface to encourage questions, not single keywords</li><li>Summaries positioned as entry points, not replacements for source content</li><li>Clear attribution and links back to original articles reinforced transparency</li></ul></div>
-      <div class="cell alt"><p class="ck">What this revealed</p><p class="ct">The next frontier</p><ul class="cl"><li>Users still needed to ask follow-up questions manually</li><li>Context was lost between separate searches</li><li>Users still had to compare perspectives and reason independently</li></ul></div>
+    <div class="prose">
+      <p>My diagnosis went beyond the surface symptoms. The root problem was architectural: users thought in <strong>questions, concepts, and intent</strong> — but the system retrieved through <strong>exact terms, tags, and keywords</strong>. No amount of UI refinement could bridge that gap.</p>
+      <p>This framing shaped the three-stage strategy: first stabilise the existing system while building the evidence base, then replace the retrieval model entirely, then extend it into a reasoning companion that mirrors how expert users actually think.</p>
+      <p>Each stage had to earn the next — delivering visible improvement at each step rather than asking for a multi-year blank cheque. The sequencing was both technically incremental and commercially justifiable.</p>
     </div>
   </div>
-
-  <div class="screen-frame reveal">
-    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
-    <img src="stage-2-semantic-search.png" alt="EIU semantic search with AI-generated answer — Stage 2">
-    <p class="screen-caption">Stage 2 — Semantic search with AI-generated answer and cited sources</p>
-  </div>
-
-  <div class="rule"></div>
-  <div class="sh reveal">
-    <div class="pill"><span class="pill-tag">Stage 03</span></div>
-    <h2><em>The next evolution</em></h2>
-    <p class="sh-sub">From answering questions to supporting decision journeys</p>
-  </div>
-  <div class="two reveal d1">
-    <div>
-      <div class="cell" style="margin-bottom:1.5px;"><p class="ck">What we observed</p><p class="ct">After semantic search</p><ul class="cl"><li>Users' questions evolved as they learned — each answer raised new, more specific questions</li><li>Context was lost between searches, forcing users to restate intent repeatedly</li><li>Users still had to connect insights and reason on their own</li></ul></div>
-      <div class="cell alt"><p class="ck">Why a multi-turn co-pilot</p><p class="ct">Real decisions are iterative</p><ul class="cl"><li>Real decisions are iterative and exploratory, not single-query events</li><li>A co-pilot retains context across turns and builds on previous responses</li><li>Supports follow-up and comparison without losing the thread</li></ul></div>
-    </div>
-    <div class="cell"><p class="ck">Design principles</p><p class="ct">Transparency &amp; user control</p><ul class="cl"><li>Transparency: responses are grounded in sources and assumptions are visible</li><li>User control: the co-pilot supports reasoning, not conclusions</li><li>Follow-up question suggestions surface naturally in the interface</li><li>AI attribution is always visible — users know what generated the answer</li></ul></div>
-  </div>
-
-  <div class="screen-frame reveal">
-    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
-    <img src="stage-3-copilot.png" alt="EIU AI Lens multi-turn co-pilot — Stage 3">
-    <p class="screen-caption">Stage 3 — AI Lens: multi-turn decision co-pilot with context-aware follow-up suggestions</p>
-  </div>
-
-  <div class="rule"></div>
-  <div class="sh reveal">
-    <div class="pill"><span class="pill-tag">Overview</span></div>
-    <h2>A deliberate progression from <em>retrieval to reasoning</em></h2>
-  </div>
-  <div class="tl reveal d1">
-    <div class="ts">
-      <p class="tsl">Stage 01</p><h3 class="tst">Keyword Search</h3><span class="tstag">Foundation problem</span>
-      <p class="tll-label">What we did</p>
-      <ul class="tll"><li>Improved Elasticsearch logic and relevance tuning</li><li>Refined filters and terminology</li><li>Added synonyms for varied user language</li></ul>
-      <div class="tdiv"></div>
-      <p class="tll-label">What we learned</p>
-      <ul class="tll"><li>Optimisation helped at the margins, but search still depended on keywords and prior knowledge</li></ul>
-    </div>
-    <div class="ts hi">
-      <p class="tsl">Stage 02</p><h3 class="tst">AI-Powered Semantic Search</h3><span class="tstag">Foundation fix</span>
-      <p class="tll-label">What changed</p>
-      <ul class="tll"><li>Enabled natural language, question-based queries</li><li>Shifted from term matching to intent and conceptual relevance</li><li>AI-generated summaries to surface key insights quickly</li></ul>
-      <div class="tdiv"></div>
-      <p class="tll-label">What this unlocked</p>
-      <ul class="tll"><li>Faster understanding and more confident discovery</li></ul>
-    </div>
-    <div class="ts">
-      <p class="tsl">Stage 03</p><h3 class="tst">Multi-turn Decision Co-pilot</h3><span class="tstag">Next evolution</span>
-      <p class="tll-label">What we're building</p>
-      <ul class="tll"><li>Supports iterative, multi-step questioning</li><li>Retains context across turns</li><li>Helps users explore, compare, and reason over time</li></ul>
-      <div class="tdiv"></div>
-      <p class="tll-label">Why this matters</p>
-      <ul class="tll"><li>Decisions happen over journeys, not single searches</li></ul>
-    </div>
-  </div>
-
+ 
+  <!-- MY LEADERSHIP ROLE -->
   <div class="rule"></div>
   <div class="sh reveal">
     <div class="pill"><span class="pill-tag">My role</span></div>
-    <h2>Leading the <em>evolution</em></h2>
+    <h2>End-to-end ownership across <em>three stages and four years</em></h2>
+    <p class="sh-sub">What I led and how</p>
   </div>
-  <div class="rg reveal d1">
-    <div class="cell"><p class="ck">Strategy &amp; alignment</p><ul class="cl" style="margin-top:0.5rem;"><li>Defined the search evolution strategy and sequencing across all three stages</li><li>Led alignment across product, engineering, editorial, and leadership</li><li>Advocated for a measured, responsible adoption of AI</li><li>Facilitated trade-offs between feasibility, trust, and user needs</li></ul></div>
-    <div class="cell alt"><p class="ck">Design &amp; research</p><ul class="cl" style="margin-top:0.5rem;"><li>End-to-end UX design across all three stages</li><li>User research, usability testing, and analytics interpretation</li><li>Introduced synthetic user research methods to accelerate discovery</li><li>Maintained design fidelity through engineering delivery</li></ul></div>
+  <div class="three reveal d1">
+    <div class="cell">
+      <p class="ck">Strategy &amp; sequencing</p>
+      <p class="ct">Defining the roadmap</p>
+      <ul class="cl">
+        <li>Diagnosed the structural mismatch between user intent and system retrieval</li>
+        <li>Defined the evolution strategy and the rationale for each transition point</li>
+        <li>Secured stakeholder alignment across product, engineering, editorial, and senior leadership at each stage</li>
+        <li>Advocated for measured, responsible AI adoption — grounding each stage in user evidence before escalating complexity</li>
+      </ul>
+    </div>
+    <div class="cell alt">
+      <p class="ck">Research &amp; discovery</p>
+      <p class="ct">Understanding expert users at scale</p>
+      <ul class="cl">
+        <li>Conducted user interviews and usability testing with analysts, economists, and policy researchers across geographies</li>
+        <li>Introduced synthetic user research methods — using AI to simulate expert personas and accelerate hypothesis testing</li>
+        <li>Partnered with data analytics to connect quantitative signals to qualitative insights</li>
+        <li>Defined the 7% semantic search engagement baseline as the north star metric for co-pilot success</li>
+      </ul>
+    </div>
+    <div class="cell">
+      <p class="ck">Design &amp; delivery</p>
+      <p class="ct">Shipping across three product cycles</p>
+      <ul class="cl">
+        <li>End-to-end UX across all three stages — IA, interaction design, prototyping, and handoff</li>
+        <li>Maintained design fidelity through agile delivery — embedded in the squad through engineering and launch</li>
+        <li>Designed for transparency and user control at every AI touchpoint — attribution, source visibility, explicit reasoning</li>
+        <li>Mentored junior designers contributing to the search workstream</li>
+      </ul>
+    </div>
   </div>
-
-  <div class="og reveal">
-    <div class="oc"><div class="oi">↑</div><p class="ol">Search success rate</p><p class="od">Semantic search meaningfully reduced failed searches by enabling question-based, intent-driven queries.</p></div>
-    <div class="oc"><div class="oi">↓</div><p class="ol">Drop-off at search</p><p class="od">Improved relevance and faster insight surfacing reduced abandonment at a critical moment in the user journey.</p></div>
-    <div class="oc"><div class="oi">✦</div><p class="ol">Responsible AI adoption</p><p class="od">Built a transparent, source-grounded AI experience that maintained user trust through attribution and control.</p></div>
+ 
+  <!-- STAGE 01 -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Stage 01 · 2023</span></div>
+    <h2><em>Stabilise the foundation</em></h2>
+    <p class="sh-sub">Optimising keyword search — and proving it wasn't enough</p>
   </div>
-
+  <div class="stage reveal d1">
+    <div class="stage-header">
+      <div class="stage-num">01</div>
+      <div>
+        <p class="stage-title">Keyword search optimisation</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px;">Reduce immediate friction while building the evidence base for a deeper fix</p>
+      </div>
+      <span class="stage-tag">Foundation stabilisation</span>
+    </div>
+    <div class="stage-body">
+      <div class="stage-cell">
+        <p class="sc-label">The diagnosis</p>
+        <p class="sc-title">What was actually broken</p>
+        <ul class="cl">
+          <li>Relevance ranking was surfacing outdated or tangential content at the top of results</li>
+          <li>Filter labels used internal taxonomy that didn't match how users described their research needs</li>
+          <li>No snippet previews — users had to open articles to assess relevance, multiplying friction</li>
+          <li>No synonym handling — "growth" and "GDP expansion" returned entirely different results</li>
+        </ul>
+      </div>
+      <div class="stage-cell alt">
+        <p class="sc-label">The design decisions</p>
+        <p class="sc-title">What I changed and why</p>
+        <ul class="cl">
+          <li>Refined ranking logic to weight recency and relevance signals more accurately</li>
+          <li>Rewrote filter labels using language surfaced directly from user interview transcripts</li>
+          <li>Introduced article snippets across all results — reducing the need to click-and-back</li>
+          <li>Built a synonym dictionary seeded from search query logs to handle natural language variation</li>
+        </ul>
+      </div>
+      <div class="stage-cell outcome">
+        <p class="sc-label">The outcome</p>
+        <p class="sc-title">What changed — and what didn't</p>
+        <ul class="cl">
+          <li>Marginal improvement in filter usage once terminology aligned with user language</li>
+          <li>Reduced irrelevant results for known, structured queries</li>
+          <li>Drop-off remained at 33% — confirming the problem was structural, not cosmetic</li>
+          <li>Produced the evidence needed to make the case for semantic search investment</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="quote reveal">
+    <div class="qbar"></div>
+    <p class="qt">"Optimising a keyword system for users who think in questions is like giving someone a better map of the wrong city. The destination was never the problem — the retrieval model was."</p>
+  </div>
+ 
+  <div class="screen-frame reveal">
+    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
+    <img src="stage-1-keyword-search.png" alt="Stage 1 — Optimised keyword search results">
+    <p class="screen-caption">Stage 1 — Optimised keyword search with improved ranking, relabelled filters, and article snippets</p>
+  </div>
+ 
+  <!-- STAGE 02 -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Stage 02 · 2023</span></div>
+    <h2><em>Replace the retrieval model</em></h2>
+    <p class="sh-sub">From keyword matching to semantic understanding</p>
+  </div>
+  <div class="stage reveal d1">
+    <div class="stage-header">
+      <div class="stage-num">02</div>
+      <div>
+        <p class="stage-title">AI-powered semantic search</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px;">Let users search the way they think — in questions and concepts, not keywords</p>
+      </div>
+      <span class="stage-tag">Structural change</span>
+    </div>
+    <div class="stage-body">
+      <div class="stage-cell">
+        <p class="sc-label">The diagnosis</p>
+        <p class="sc-title">Why the model had to change</p>
+        <ul class="cl">
+          <li>Expert users search with intent — "what's driving political risk in Southeast Asia?" — not keywords like "Southeast Asia political"</li>
+          <li>Question-based queries returned near-zero relevant results under the keyword model</li>
+          <li>Users were breaking questions into fragments and manually scanning results — adding cognitive load the platform should be removing</li>
+          <li>The platform's analytical depth was invisible at the surface; users couldn't reach the insight layer</li>
+        </ul>
+      </div>
+      <div class="stage-cell alt">
+        <p class="sc-label">The design decisions</p>
+        <p class="sc-title">What I introduced and why</p>
+        <ul class="cl">
+          <li>Semantic search — understanding intent and conceptual meaning, not just term frequency</li>
+          <li>AI-generated answer summaries surfaced at the top of results — reducing time-to-insight dramatically</li>
+          <li>Redesigned the search input to visually encourage questions, not single-word entries</li>
+          <li>Summaries as entry points, never replacements — all source articles remained visible and attributed</li>
+          <li>Explicit AI attribution on every generated response — users always know what is AI-generated vs. editorial</li>
+        </ul>
+      </div>
+      <div class="stage-cell outcome">
+        <p class="sc-label">The outcome</p>
+        <p class="sc-title">Impact and the new baseline</p>
+        <ul class="cl">
+          <li>Question-based queries now resolved accurately — the primary failure mode of Stage 01 eliminated</li>
+          <li>Faster time-to-insight: users reached the answer layer without scanning multiple articles</li>
+          <li>Established 7% monthly active user engagement — the benchmark that defines Stage 03 success</li>
+          <li>New pattern emerged: users wanted to continue the conversation — semantic search couldn't handle follow-ups across turns</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="screen-frame reveal">
+    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
+    <img src="stage-2-semantic-search.png" alt="Stage 2 — Semantic search with AI-generated answer">
+    <p class="screen-caption">Stage 2 — Semantic search: natural language query, AI-generated answer summary, cited source articles</p>
+  </div>
+ 
+  <!-- STAGE 03 -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Stage 03 · 2024–2026</span></div>
+    <h2><em>Extend into reasoning</em></h2>
+    <p class="sh-sub">From answering questions to supporting decision journeys</p>
+  </div>
+  <div class="stage reveal d1">
+    <div class="stage-header">
+      <div class="stage-num">03</div>
+      <div>
+        <p class="stage-title">Multi-turn AI decision co-pilot</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px;">A reasoning companion that retains context, supports follow-up, and helps experts think — not just retrieve</p>
+      </div>
+      <span class="stage-tag">Next evolution</span>
+    </div>
+    <div class="stage-body">
+      <div class="stage-cell">
+        <p class="sc-label">The diagnosis</p>
+        <p class="sc-title">What semantic search revealed</p>
+        <ul class="cl">
+          <li>Users' questions evolved as they learned — each answer raised more specific follow-up questions</li>
+          <li>Context was lost between searches, forcing users to restate intent every time</li>
+          <li>Expert decisions are iterative — analysts compare scenarios and build a picture over time, not via single queries</li>
+          <li>The 7% baseline showed most users still weren't reaching the deepest value layer of the platform</li>
+        </ul>
+      </div>
+      <div class="stage-cell alt">
+        <p class="sc-label">The design decisions</p>
+        <p class="sc-title">How I designed for expert reasoning</p>
+        <ul class="cl">
+          <li>Multi-turn model — the co-pilot retains full context across a session, building on previous responses</li>
+          <li>Proactive follow-up suggestions — surface the next logical question, reducing cognitive load between turns</li>
+          <li>All responses grounded in source content with visible attribution — users see what evidence supports each answer</li>
+          <li>Explicit reasoning trails — the co-pilot shows its working so expert users can interrogate and validate</li>
+          <li>User control preserved throughout — the co-pilot supports reasoning, it does not conclude on behalf of the user</li>
+        </ul>
+      </div>
+      <div class="stage-cell outcome">
+        <p class="sc-label">The north star</p>
+        <p class="sc-title">How Stage 03 success is measured</p>
+        <ul class="cl">
+          <li>North star: exceed the 7% monthly active engagement established by semantic search</li>
+          <li>Secondary signals: session depth (turns per session), return rate, follow-up query volume</li>
+          <li>Stage 03 is live and in active measurement — tracked against the semantic search baseline</li>
+          <li>Early signals show significantly deeper sessions than Stage 02 — multi-turn behaviour emerging as designed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="screen-frame reveal">
+    <div class="screen-bar"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-url"></div></div>
+    <img src="stage-3-copilot.png" alt="Stage 3 — Multi-turn AI decision co-pilot">
+    <p class="screen-caption">Stage 3 — Multi-turn AI co-pilot: context-aware follow-up suggestions, source attribution, transparent reasoning</p>
+  </div>
+ 
+  <!-- OUTCOMES -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Outcomes</span></div>
+    <h2>What <em>changed</em> — and what it took to get there</h2>
+    <p class="sh-sub">Impact across three stages</p>
+  </div>
+  <div class="outcomes reveal d1">
+    <div class="oc">
+      <p class="oi">↑</p>
+      <p class="ol">Search success rate</p>
+      <p class="od">Semantic search eliminated the primary failure mode — question-based queries now resolve accurately, directly addressing the 57% failure rate that defined the problem.</p>
+    </div>
+    <div class="oc">
+      <p class="oi">7<span style="font-size:20px;vertical-align:super;">%</span></p>
+      <p class="ol">Monthly engagement baseline set</p>
+      <p class="od">Semantic search established consistent 7% monthly active user engagement — the measurable north star the co-pilot is now designed to exceed.</p>
+    </div>
+    <div class="oc">
+      <p class="oi">✦</p>
+      <p class="ol">Responsible AI adoption</p>
+      <p class="od">Built a transparent, source-grounded AI experience trusted by expert audiences — attribution, user control, and explicit reasoning at every touchpoint across both AI stages.</p>
+    </div>
+  </div>
+ 
+  <!-- REFLECTION -->
+  <div class="reflection reveal">
+    <p class="ref-kicker">Reflection</p>
+    <h3 class="ref-title">What I'd do <em>differently</em></h3>
+    <div class="two" style="padding:0;">
+      <div class="prose">
+        <p>I'd invest more in the transition between Stage 01 and Stage 02. We moved from diagnosis to semantic search without building enough shared understanding of the retrieval model change across the broader team. Engineers and editorial had legitimate questions about how AI-generated summaries would interact with editorial standards — and we answered those reactively rather than proactively.</p>
+        <p>The lesson: when the design intervention is a system-level change rather than a feature change, the alignment work needs to precede the design work, not run in parallel with it.</p>
+      </div>
+      <div class="prose">
+        <p>I'd also define the success metric at the start of each stage, not retrospectively. We defined the 7% north star for the co-pilot after semantic search had been live for months. Setting and publishing metrics at the outset of each stage would have created sharper focus and made the handoff between stages cleaner.</p>
+        <p>That said, the three-stage sequencing held up. Earning each stage through evidence rather than ambition meant every design decision was defensible, and stakeholder trust accumulated rather than eroded over the four-year arc.</p>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- NDA -->
+  <div class="nda reveal">
+    <p><strong>NDA notice —</strong> The organisation name, platform name, and product feature names in this case study have been anonymised under a non-disclosure agreement. All metrics, strategic decisions, and design work described are accurate and drawn from direct personal involvement. Screenshots shown are property of the organisation and appear here for portfolio purposes only.</p>
+  </div>
+ 
+  <!-- NAV FOOTER -->
   <div class="nav-f reveal">
-    <a href="index.html#work" class="nfc"><p class="nfd">← All work</p><p class="nft">Back to portfolio</p><span class="nfa">←</span></a>
-    <a href="case-study-design-system.html" class="nfc r"><p class="nfd">Next →</p><p class="nft">Design System &amp; UX Governance</p><span class="nfa">→</span></a>
+    <a href="index.html#case-studies" class="nfc"><p class="nfd">← All work</p><p class="nft">Back to portfolio</p><span class="nfa">←</span></a>
+    <a href="case-study-homepage.html" class="nfc r"><p class="nfd">Next case study →</p><p class="nft">Homepage redesign via synthetic research</p><span class="nfa">→</span></a>
   </div>
+ 
 </div>
-
+ 
 <div class="gold-bar"></div>
-<footer><span class="fn">Sonal Bhagria</span><span class="fr">Lead Product Designer · Gurugram, India · 2026</span></footer>
-
+<footer>
+  <span class="fn">Sonal Bhagria</span>
+  <span class="fr">Lead Product Designer · Gurugram, India · 2026</span>
+</footer>
+ 
 <script>
   const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
   let mx=0,my=0,rx=0,ry=0;
