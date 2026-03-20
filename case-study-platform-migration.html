@@ -36,7 +36,13 @@
   nav.scrolled{background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border-soft);}
   .nav-back{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;display:flex;align-items:center;gap:8px;}
   .nav-back:hover{color:var(--gold);}
-
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
   /* HERO */
   .cs-hero{padding:9rem 4rem 0;max-width:1100px;margin:0 auto;}
   .crumb{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:2.5rem;}
