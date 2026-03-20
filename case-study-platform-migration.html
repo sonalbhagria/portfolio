@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform Migration — Sonal Bhagria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root {
+    --cream:        #FFFFFF;
+    --cream-deeper: #FBF5F0;
+    --cream-dark:   #F7F7F7;
+    --ink:          #1C1814;
+    --ink-soft:     #3D3530;
+    --muted:        #777777;
+    --hint:         #AAAAAA;
+    --gold:         #C4521A;
+    --gold-light:   #D97A45;
+    --gold-dark:    #9E3E10;
+    --border-soft:  #E8E8E8;
+    --serif:        'Cormorant Garamond', Georgia, serif;
+    --sans:         'DM Sans', sans-serif;
+  }
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  .cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
+  .cursor-ring{width:32px;height:32px;border:1px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:0.5;transition:opacity 0.2s;}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1);}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 4rem;transition:background 0.4s,border-bottom 0.4s;}
+  nav.scrolled{background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border-soft);}
+  .nav-back{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;display:flex;align-items:center;gap:8px;}
+  .nav-back:hover{color:var(--gold);}
+
+  /* HERO */
+  .cs-hero{padding:9rem 4rem 0;max-width:1100px;margin:0 auto;}
+  .crumb{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:2.5rem;}
+  .crumb a{color:var(--hint);text-decoration:none;transition:color 0.2s;}
+  .crumb a:hover{color:var(--gold);}
+  .crumb span{color:var(--gold-light);}
+  .eyebrow{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+  .eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--gold);}
+  h1{font-family:var(--serif);font-size:clamp(36px,5.5vw,66px);font-weight:300;line-height:1.06;letter-spacing:-0.02em;margin-bottom:1.75rem;max-width:820px;}
+  h1 em{font-style:italic;color:var(--gold-dark);}
+  .intro{font-size:15px;line-height:1.85;color:var(--muted);max-width:620px;margin-bottom:3rem;}
+  .meta-row{display:flex;gap:0;flex-wrap:wrap;border-top:0.5px solid var(--border-soft);border-bottom:0.5px solid var(--border-soft);}
+  .mc{padding:1.75rem 2.5rem 1.75rem 0;margin-right:2.5rem;border-right:0.5px solid var(--border-soft);}
+  .mc:last-child{border-right:none;margin-right:0;}
+  .ml{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:5px;}
+  .mv{font-size:14px;color:var(--ink-soft);}
+
+  /* BODY */
+  .cs-body{max-width:1100px;margin:0 auto;padding:0 4rem 6rem;}
+  .rule{height:0.5px;background:var(--border-soft);margin:4rem 0 0;}
+  .gold-bar{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.3;}
+  .sh{padding:4rem 0 0;}
+  .pill{display:inline-flex;align-items:center;margin-bottom:1.5rem;}
+  .pill-tag{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;padding:5px 12px;border:0.5px solid var(--gold);color:var(--gold);border-radius:1px;}
+  h2{font-family:var(--serif);font-size:clamp(26px,3.5vw,42px);font-weight:300;line-height:1.15;letter-spacing:-0.01em;margin-bottom:0.75rem;}
+  h2 em{font-style:italic;}
+  .sh-sub{font-family:var(--serif);font-size:17px;font-weight:300;font-style:italic;color:var(--muted);margin-bottom:2.5rem;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;padding:2.5rem 0;}
+  .prose{font-size:15px;line-height:1.9;color:var(--muted);}
+  .prose p{margin-bottom:1.25rem;}
+  .prose p:last-child{margin-bottom:0;}
+  .prose strong{font-weight:500;color:var(--ink-soft);}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .five-col{display:grid;grid-template-columns:repeat(5,1fr);gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .cell{background:var(--cream);padding:2rem 1.75rem;}
+  .cell.alt{background:var(--cream-dark);}
+  .cell.deep{background:var(--cream-deeper);}
+  .cell.dark{background:#1C1814;}
+  .ck{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
+  .ct{font-family:var(--serif);font-size:17px;font-weight:400;line-height:1.3;margin-bottom:1rem;color:var(--ink);}
+  .cl{list-style:none;padding:0;}
+  .cl li{font-size:13px;line-height:1.75;color:var(--muted);padding-left:14px;position:relative;margin-bottom:4px;}
+  .cl li::before{content:'·';position:absolute;left:0;color:var(--gold);}
+
+  /* IMPACT BAR */
+  .impact{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5px;background:var(--border-soft);margin:3.5rem 0 0;}
+  .ic{background:var(--cream-deeper);padding:2.5rem 2rem;text-align:center;}
+  .in{font-family:var(--serif);font-size:52px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:6px;}
+  .in sup{font-size:26px;vertical-align:super;}
+  .il{font-size:12px;font-weight:500;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:4px;}
+  .id{font-size:12px;color:var(--muted);line-height:1.6;}
+
+  /* LEADERSHIP */
+  .leadership{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .lc{background:var(--cream);padding:2rem 1.75rem;}
+  .lc.featured{background:#1C1814;}
+  .cl-light{list-style:none;padding:0;}
+  .cl-light li{font-size:12px;line-height:1.75;color:rgba(245,240,234,0.55);padding-left:14px;position:relative;margin-bottom:4px;}
+  .cl-light li::before{content:'·';position:absolute;left:0;color:var(--gold-light);}
+
+  /* PHASE BLOCKS */
+  .phase{margin:2rem 0;border:0.5px solid var(--border-soft);}
+  .phase-header{display:grid;grid-template-columns:auto 1fr auto;gap:2rem;align-items:center;padding:2rem 2.5rem;border-bottom:0.5px solid var(--border-soft);background:var(--cream-deeper);}
+  .phase-num{font-family:var(--serif);font-size:48px;font-weight:300;color:var(--gold-light);line-height:1;}
+  .phase-title{font-family:var(--serif);font-size:20px;font-weight:300;line-height:1.2;color:var(--ink);}
+  .phase-title em{font-style:italic;color:var(--gold-dark);}
+  .phase-tag{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:0.5px solid var(--border-soft);color:var(--hint);border-radius:1px;white-space:nowrap;background:var(--cream);}
+  .phase-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);}
+  .phase-cell{background:var(--cream);padding:2rem 1.75rem;}
+  .phase-cell.alt{background:var(--cream-dark);}
+  .phase-outcome{background:var(--cream-deeper);padding:2rem 2.5rem;border-top:0.5px solid var(--border-soft);display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;}
+  .outcome-icon{font-family:var(--serif);font-size:32px;font-weight:300;color:var(--gold);line-height:1;padding-top:2px;}
+  .outcome-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+  .outcome-text{font-size:14px;line-height:1.75;color:var(--ink-soft);}
+
+  /* BEFORE/AFTER */
+  .ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2.5rem 0;}
+  .ba-cell{background:var(--cream-deeper);overflow:hidden;}
+  .ba-cell img{width:100%;display:block;}
+  .ba-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);padding:8px 12px;background:var(--cream-dark);}
+
+  /* DESIGN SYSTEM BLOCK */
+  .ds-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .ds-cell{background:var(--cream);padding:1.75rem 1.5rem;}
+  .ds-num{font-family:var(--serif);font-size:36px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:6px;}
+  .ds-label{font-size:12px;font-weight:500;color:var(--ink-soft);margin-bottom:4px;}
+  .ds-desc{font-size:11px;line-height:1.7;color:var(--muted);}
+
+  /* QUOTE */
+  .quote{padding:3rem 0;display:grid;grid-template-columns:4px 1fr;gap:2rem;}
+  .qbar{background:var(--gold);}
+  .qt{font-family:var(--serif);font-size:clamp(18px,2.5vw,26px);font-weight:300;line-height:1.55;font-style:italic;color:var(--ink-soft);}
+
+  /* OUTCOMES */
+  .og{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .oc{background:var(--cream-dark);padding:2.5rem 2rem;}
+  .oi{font-family:var(--serif);font-size:44px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:10px;}
+  .oi sup{font-size:22px;vertical-align:super;}
+  .ol{font-size:13px;font-weight:500;letter-spacing:0.03em;color:var(--ink-soft);margin-bottom:6px;}
+  .od{font-size:12px;line-height:1.75;color:var(--muted);}
+
+  /* DARK FEATURE */
+  .dark-feature{background:#1C1814;padding:3rem 3.5rem;margin:2.5rem 0;}
+  .df-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light);margin-bottom:1rem;}
+  .df-text{font-size:15px;line-height:1.85;color:rgba(245,240,234,0.6);}
+  .df-text strong{color:#F5F0EA;font-weight:500;}
+
+  /* REFLECTION */
+  .reflection{background:var(--cream-deeper);border:0.5px solid var(--border-soft);padding:3rem 3.5rem;margin:2.5rem 0;}
+  .ref-kicker{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+  .ref-text{font-family:var(--serif);font-size:20px;font-weight:300;line-height:1.6;color:var(--ink-soft);}
+  .ref-text em{font-style:italic;}
+
+  /* NDA */
+  .nda{font-size:11px;color:var(--hint);line-height:1.7;padding:2rem 0;border-top:0.5px solid var(--border-soft);margin-top:4rem;}
+
+  /* NAV FOOTER */
+  .nav-f{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin-top:4rem;}
+  .nfc{background:var(--cream);padding:2.5rem;text-decoration:none;color:var(--ink);transition:background 0.2s;}
+  .nfc:hover{background:var(--cream-dark);}
+  .nfd{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:8px;}
+  .nft{font-family:var(--serif);font-size:20px;font-weight:300;}
+  .nfa{font-size:18px;color:var(--gold);margin-top:12px;display:block;}
+  .nfc.r{text-align:right;}
+
+  footer{background:var(--ink);color:var(--hint);padding:2.5rem 4rem;display:flex;justify-content:space-between;align-items:center;}
+  .fn{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--cream-dark);}
+  .fr{font-size:11px;letter-spacing:0.06em;}
+
+  @media(max-width:900px){
+    nav{padding:1.25rem 2rem;}
+    .cs-hero,.cs-body{padding-left:2rem;padding-right:2rem;}
+    .cs-hero{padding-top:7rem;}
+    .two,.nav-f,.two-col{grid-template-columns:1fr;}
+    .three,.phase-body,.leadership,.impact,.og,.ds-grid,.five-col{grid-template-columns:1fr 1fr;}
+    .phase-header{grid-template-columns:auto 1fr;gap:1rem;}
+    .phase-tag{display:none;}
+    .ba-grid{grid-template-columns:1fr;}
+    footer{flex-direction:column;gap:1rem;text-align:center;padding:2rem;}
+  }
+  @media(max-width:600px){
+    .three,.phase-body,.leadership,.impact,.og,.ds-grid,.five-col{grid-template-columns:1fr;}
+    .meta-row{flex-direction:column;}
+    .mc{border-right:none;border-bottom:0.5px solid var(--border-soft);padding:1.25rem 0;margin-right:0;}
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;font-family:'DM Sans',sans-serif;">
+    <span style="font-size:20px;font-weight:200;color:var(--ink);">S</span>
+    <span style="width:1.5px;height:16px;background:var(--gold);flex-shrink:0;"></span>
+    <span style="font-size:20px;font-weight:500;color:var(--ink);">B</span>
+  </a>
+  <a href="index.html#case-studies" class="nav-back">← Back to work</a>
+</nav>
+
+<!-- HERO -->
+<div class="cs-hero">
+  <div class="crumb reveal"><a href="index.html">Home</a><span>/</span><span>Case study</span></div>
+  <div class="eyebrow reveal d1">A leading B2B intelligence platform · 2020–2023</div>
+  <h1 class="reveal d2">Migrating five products to a<br>modern platform — <em>without<br>losing the users who knew it</em></h1>
+  <p class="intro reveal d3">A three-year platform migration across five interconnected products — moving from a legacy, non-responsive system to a modern CMS-driven platform. I led UX strategy end to end: research, design system, phased product rollout, onboarding redesign, and stakeholder alignment. The result was 89% adoption within 90 days — exceeding the 60–80% enterprise benchmark.</p>
+  <div class="meta-row reveal d4">
+    <div class="mc"><p class="ml">My role</p><p class="mv">Lead Product Designer · UX Strategist</p></div>
+    <div class="mc"><p class="ml">Scope</p><p class="mv">5 products · Design system · Migration UX</p></div>
+    <div class="mc"><p class="ml">Platform scale</p><p class="mv">930+ organisations · 60+ countries</p></div>
+    <div class="mc"><p class="ml">Timeline</p><p class="mv">2020 – 2023 · Phased delivery</p></div>
+  </div>
+</div>
+
+<div class="cs-body">
+
+  <!-- 1. IMPACT BAR -->
+  <div class="impact reveal">
+    <div class="ic">
+      <div class="in">89<sup>%</sup></div>
+      <p class="il">Platform adoption</p>
+      <p class="id">Within 90 days of launch — against an enterprise benchmark of 60–80%</p>
+    </div>
+    <div class="ic">
+      <div class="in">67<sup>%</sup></div>
+      <p class="il">Monthly return rate</p>
+      <p class="id">Sustained returning user rate after migration — evidence of genuine retention</p>
+    </div>
+    <div class="ic">
+      <div class="in">15<sup>%</sup></div>
+      <p class="il">MoM engagement growth</p>
+      <p class="id">Month-on-month feature engagement growth following UX improvements</p>
+    </div>
+    <div class="ic">
+      <div class="in">5</div>
+      <p class="il">Products migrated</p>
+      <p class="id">Intelligence, risk & ratings, forecasting, country analysis, industry analysis</p>
+    </div>
+  </div>
+
+  <!-- 2. THE BRIEF -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">The brief</span></div>
+    <h2>A platform that had outgrown <em>itself</em></h2>
+    <p class="sh-sub">The business problem</p>
+  </div>
+  <div class="two reveal d1">
+    <div class="prose">
+      <p>The platform had been built on a legacy system that was never designed for scale. It was desktop-only, not CMS-driven, and had accumulated years of design debt across five distinct products — each with its own information architecture, interaction patterns, and visual language.</p>
+      <p>For 930+ organisations across 60+ countries, this was the primary tool for intelligence, risk assessment, and economic forecasting. <strong>The stakes of getting migration wrong were high.</strong> Enterprise clients had invested years learning the existing system. Disrupting that familiarity risked churn at exactly the moment we needed to build confidence in the new platform.</p>
+    </div>
+    <div class="prose">
+      <p>The brief was deceptively complex: modernise everything — responsiveness, CMS infrastructure, design language, navigation — while ensuring that users who knew the old system could find their way in the new one without relearning from scratch.</p>
+      <p>I led UX strategy across all five products, designed the component system that would underpin the new platform, ran the research that shaped each product's migration approach, and managed alignment with product, engineering, and senior stakeholders throughout a three-year phased delivery.</p>
+    </div>
+  </div>
+
+  <!-- 3. LEADERSHIP ROLE -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">My role</span></div>
+    <h2>Five products, <em>one design vision</em></h2>
+    <p class="sh-sub">What I owned across the full migration</p>
+  </div>
+  <div class="leadership reveal d1">
+    <div class="lc featured">
+      <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.75rem;">Strategy</p>
+      <p style="font-size:13px;font-weight:500;color:#F5F0EA;margin-bottom:0.5rem;">UX vision &amp; migration sequencing</p>
+      <ul class="cl-light">
+        <li>Defined the UX principles that would govern all five product migrations</li>
+        <li>Argued for a phased approach — one product at a time — to manage risk and learn from each rollout</li>
+        <li>Established the design system as the connective tissue across products before migration began</li>
+        <li>Identified $200K+ revenue at risk through UX audits, making the business case for onboarding redesign</li>
+      </ul>
+    </div>
+    <div class="lc">
+      <p class="ck">Design system</p>
+      <p class="ct" style="font-size:15px;">Built from scratch</p>
+      <ul class="cl">
+        <li>Created EIU's first standardised component library — covering all five products</li>
+        <li>Established UX governance so components stayed consistent as products evolved independently</li>
+        <li>Reduced design-to-engineering handoff iterations significantly across squads</li>
+        <li>Became the reference system for all new product work after migration</li>
+      </ul>
+    </div>
+    <div class="lc alt">
+      <p class="ck">Research &amp; alignment</p>
+      <p class="ct" style="font-size:15px;">Evidence-based decisions</p>
+      <ul class="cl">
+        <li>Ran user research before each product migration to understand familiarity patterns and risk points</li>
+        <li>Conducted usability testing at key migration milestones</li>
+        <li>Aligned product managers, engineers, editorial, and leadership across a three-year programme</li>
+        <li>Oversaw onboarding and re-engagement redesign to reduce churn during transition</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4. THE CORE CHALLENGE -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">The challenge</span></div>
+    <h2>Modernise everything. <em>Disorient no one.</em></h2>
+    <p class="sh-sub">The central design tension</p>
+  </div>
+  <div class="two reveal d1">
+    <div class="prose">
+      <p>Enterprise users are not casual users. The analysts, economists, and risk managers using this platform had built their daily workflows around it. They knew exactly where to go, what to click, and how to get what they needed — even if the system that enabled this was technically outdated.</p>
+      <p><strong>Familiarity is a form of trust.</strong> Breaking it — even in service of improvement — can feel like a betrayal to users who have invested time in learning a system. The research was clear: users were not asking for change. They were asking for stability, with better performance underneath.</p>
+    </div>
+    <div class="prose">
+      <p>This shaped every design decision. The new platform needed to feel like an evolution, not a replacement. Navigation patterns had to remain recognisable. Content hierarchy had to be preserved. The visual language could modernise, but the mental model had to stay intact.</p>
+      <p>Where we did introduce new capabilities — responsive layouts, improved filtering, CMS-driven content updates — we designed them to feel like natural extensions of what users already knew, not additions that required learning.</p>
+    </div>
+  </div>
+
+  <div class="quote reveal">
+    <div class="qbar"></div>
+    <p class="qt">"The hardest design problem isn't building something new. It's changing something familiar — without the users noticing the change, only feeling the improvement."</p>
+  </div>
+
+  <!-- 5. THE PRODUCTS -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Scope</span></div>
+    <h2>Five products. <em>One phased migration.</em></h2>
+    <p class="sh-sub">What was migrated — and why sequencing mattered</p>
+  </div>
+
+  <div class="prose reveal d1" style="max-width:700px;padding-bottom:1.5rem;">
+    <p>Each product had a different user base, a different content model, and a different set of familiarity risks. Migrating them in sequence — rather than all at once — let us learn from each rollout, refine the approach, and carry those lessons into the next product. It also meant that at any given moment, the majority of users were on a stable platform while migration was underway.</p>
+  </div>
+
+  <div class="five-col reveal d2">
+    <div class="cell deep">
+      <p class="ck">Product 01</p>
+      <p class="ct" style="font-size:14px;margin-bottom:0.5rem;">Core intelligence platform</p>
+      <p style="font-size:12px;line-height:1.7;color:var(--muted);">The flagship product. Highest traffic, most established user behaviour. Migrated first to set the template for all others.</p>
+    </div>
+    <div class="cell">
+      <p class="ck">Product 02</p>
+      <p class="ct" style="font-size:14px;margin-bottom:0.5rem;">Risk &amp; ratings</p>
+      <p style="font-size:12px;line-height:1.7;color:var(--muted);">Complex data-heavy UI. Required careful preservation of comparison and filtering patterns users relied on daily.</p>
+    </div>
+    <div class="cell alt">
+      <p class="ck">Product 03</p>
+      <p class="ct" style="font-size:14px;margin-bottom:0.5rem;">Data &amp; forecasting</p>
+      <p style="font-size:12px;line-height:1.7;color:var(--muted);">Quantitative-heavy product. Users had strong expectations around data display density and download workflows.</p>
+    </div>
+    <div class="cell">
+      <p class="ck">Product 04</p>
+      <p class="ct" style="font-size:14px;margin-bottom:0.5rem;">Country analysis</p>
+      <p style="font-size:12px;line-height:1.7;color:var(--muted);">High breadth of content. Navigation architecture redesign was the central design challenge here.</p>
+    </div>
+    <div class="cell alt">
+      <p class="ck">Product 05</p>
+      <p class="ct" style="font-size:14px;margin-bottom:0.5rem;">Industry analysis</p>
+      <p style="font-size:12px;line-height:1.7;color:var(--muted);">Final migration. Benefited from all lessons learned across the previous four products.</p>
+    </div>
+  </div>
+
+  <!-- 6. PHASES -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Approach</span></div>
+    <h2>Research, design, <em>migrate, learn.</em></h2>
+    <p class="sh-sub">The three phases that structured every product migration</p>
+  </div>
+
+  <div class="phase reveal d1">
+    <div class="phase-header">
+      <div class="phase-num">01</div>
+      <div>
+        <div class="phase-title">Research &amp; <em>familiarity mapping</em></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Understanding what users knew — before changing anything</div>
+      </div>
+      <div class="phase-tag">Before each product</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-cell">
+        <p class="ck">What I investigated</p>
+        <p class="ct" style="font-size:15px;">Usage patterns</p>
+        <ul class="cl">
+          <li>Which navigation paths were most used — and therefore highest risk to change</li>
+          <li>Which features users had learned to work around rather than use properly</li>
+          <li>Where users expressed frustration vs where they expressed confidence</li>
+        </ul>
+      </div>
+      <div class="phase-cell alt">
+        <p class="ck">Research methods</p>
+        <p class="ct" style="font-size:15px;">Mixed methods</p>
+        <ul class="cl">
+          <li>Analytics review to identify high-traffic paths and drop-off points</li>
+          <li>User interviews with representative enterprise accounts</li>
+          <li>Usability testing of migration prototypes before any engineering work began</li>
+          <li>UX audits to surface revenue risk from broken or confusing journeys</li>
+        </ul>
+      </div>
+      <div class="phase-cell">
+        <p class="ck">Output</p>
+        <p class="ct" style="font-size:15px;">A migration risk map</p>
+        <ul class="cl">
+          <li>Ranked list of UX elements by familiarity risk — what could change vs what had to stay</li>
+          <li>Design principles specific to each product's user base</li>
+          <li>Onboarding strategy tailored to the delta between old and new experience</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase-outcome">
+      <div class="outcome-icon">→</div>
+      <div>
+        <p class="outcome-label">Why this phase mattered</p>
+        <p class="outcome-text">Every migration decision started with data, not assumption. Knowing which elements were load-bearing for user confidence meant we could be bold where we had room to be, and conservative where we didn't. This phase is what made 89% adoption achievable.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase reveal d1">
+    <div class="phase-header">
+      <div class="phase-num">02</div>
+      <div>
+        <div class="phase-title">Design system &amp; <em>component migration</em></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">The connective tissue that made five products feel like one platform</div>
+      </div>
+      <div class="phase-tag">Ran in parallel</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-cell">
+        <p class="ck">The problem it solved</p>
+        <p class="ct" style="font-size:15px;">Five products, five design languages</p>
+        <ul class="cl">
+          <li>Each legacy product had evolved independently — no shared components, no shared patterns</li>
+          <li>Migration was the moment to fix this — but only if the design system was built before products migrated, not after</li>
+          <li>Without a system, each product migration would create new inconsistency rather than resolve old inconsistency</li>
+        </ul>
+      </div>
+      <div class="phase-cell alt">
+        <p class="ck">What I built</p>
+        <p class="ct" style="font-size:15px;">EIU's first design system</p>
+        <ul class="cl">
+          <li>Full component library covering navigation, data display, filters, content cards, and interactive states</li>
+          <li>UX governance documentation so components could be extended without breaking consistency</li>
+          <li>Accessibility standards baked in from the start — not added retrospectively</li>
+          <li>Figma-to-engineering handoff protocols that reduced iteration cycles</li>
+        </ul>
+      </div>
+      <div class="phase-cell">
+        <p class="ck">The result</p>
+        <p class="ct" style="font-size:15px;">One system, five products</p>
+        <ul class="cl">
+          <li>All five migrated products share a single component library</li>
+          <li>New feature work across any product builds on existing components — not from scratch</li>
+          <li>Design-engineering handoff friction reduced significantly</li>
+          <li>The system has been extended, not replaced, for all work since 2023</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase reveal d1">
+    <div class="phase-header">
+      <div class="phase-num">03</div>
+      <div>
+        <div class="phase-title">Onboarding redesign &amp; <em>adoption strategy</em></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">The difference between launching a new platform and users actually adopting it</div>
+      </div>
+      <div class="phase-tag">At each product launch</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-cell">
+        <p class="ck">The risk</p>
+        <p class="ct" style="font-size:15px;">$200K+ revenue at risk</p>
+        <ul class="cl">
+          <li>UX audits identified enterprise accounts showing early churn signals during the transition period</li>
+          <li>The gap between launching a new platform and users adopting it is where churn happens</li>
+          <li>For enterprise clients with annual contracts, early confusion in migration could trigger non-renewal</li>
+        </ul>
+      </div>
+      <div class="phase-cell alt">
+        <p class="ck">What I designed</p>
+        <p class="ct" style="font-size:15px;">Guided transition UX</p>
+        <ul class="cl">
+          <li>Contextual onboarding that activated only at the moments users needed it — not as a blanket tour</li>
+          <li>In-product wayfinding that bridged old navigation patterns to new ones</li>
+          <li>Re-engagement flows for inactive enterprise accounts identified through analytics</li>
+          <li>A/B tested onboarding variants to identify highest-converting approach</li>
+        </ul>
+      </div>
+      <div class="phase-cell">
+        <p class="ck">The outcome</p>
+        <p class="ct" style="font-size:15px;">Adoption that held</p>
+        <ul class="cl">
+          <li>89% adoption within 90 days — beating the 60-80% enterprise benchmark</li>
+          <li>67-70% monthly return rate sustained post-migration</li>
+          <li>Churn signals in at-risk accounts reduced after re-engagement flows launched</li>
+          <li>8-15% MoM feature engagement growth as users discovered capabilities in the new platform</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase-outcome">
+      <div class="outcome-icon">→</div>
+      <div>
+        <p class="outcome-label">The lesson</p>
+        <p class="outcome-text">The migration experience didn't end at launch. How users were brought across — what they saw first, what was explained and what wasn't, what happened when they got lost — determined whether adoption was a spike or a sustained behaviour change. Designing for the transition was as important as designing the destination.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. BEFORE / AFTER -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Before &amp; after</span></div>
+    <h2>What <em>changed visually</em></h2>
+    <p class="sh-sub">Legacy platform → modern responsive platform</p>
+  </div>
+  <div class="ba-grid reveal d1">
+    <div class="ba-cell">
+      <img src="migration-old.png" alt="Legacy platform — before migration">
+      <p class="ba-label">Before — legacy platform · Desktop only · No CMS</p>
+    </div>
+    <div class="ba-cell">
+      <img src="migration-new-1.png" alt="Migrated platform — overview">
+      <p class="ba-label">After — modern platform · Responsive · CMS-driven</p>
+    </div>
+  </div>
+  <div class="ba-grid reveal d1">
+    <div class="ba-cell">
+      <img src="redesign-old.png" alt="Legacy product detail view">
+      <p class="ba-label">Before — product detail · Dense, fixed layout</p>
+    </div>
+    <div class="ba-cell">
+      <img src="migration-new-2.png" alt="Migrated product detail view">
+      <p class="ba-label">After — redesigned detail · Responsive, component-built</p>
+    </div>
+  </div>
+
+  <!-- 8. OUTCOMES -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Outcomes</span></div>
+    <h2>What the numbers <em>actually mean</em></h2>
+    <p class="sh-sub">Results in context</p>
+  </div>
+
+  <div class="dark-feature reveal">
+    <p class="df-label">The headline metric in context</p>
+    <p class="df-text"><strong>89% platform adoption within 90 days</strong> is not just a number — it's evidence that the transition strategy worked. The enterprise benchmark for platform migrations of this complexity is 60–80%. Exceeding it means users weren't just moved across; they were confident enough in the new experience to return, explore, and engage. That confidence is a design outcome, not just an engineering one.</p>
+  </div>
+
+  <div class="og reveal">
+    <div class="oc">
+      <div class="oi">89<sup>%</sup></div>
+      <p class="ol">Adoption in 90 days</p>
+      <p class="od">Exceeded enterprise benchmark of 60–80%. The result of phased rollout, familiarity-first design, and a guided transition experience.</p>
+    </div>
+    <div class="oc">
+      <div class="oi">67<sup>%</sup></div>
+      <p class="ol">Monthly return rate</p>
+      <p class="od">Sustained returning user rate post-migration — evidence that adoption converted into habit, not just initial curiosity.</p>
+    </div>
+    <div class="oc">
+      <div class="oi">15<sup>%</sup></div>
+      <p class="ol">MoM engagement growth</p>
+      <p class="od">Month-on-month feature engagement growth as users discovered capabilities in the new platform that the legacy system had hidden.</p>
+    </div>
+    <div class="oc">
+      <div class="oi">1</div>
+      <p class="ol">Unified design system</p>
+      <p class="od">Five products now share a single component library — built from scratch as part of this migration and still in active use.</p>
+    </div>
+  </div>
+
+  <!-- 9. REFLECTION -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Reflection</span></div>
+    <h2>What I'd do <em>differently</em></h2>
+  </div>
+
+  <div class="reflection reveal d1">
+    <p class="ref-kicker">Honest retrospective</p>
+    <p class="ref-text">The phased approach was the right call, but the gaps between phases were too long in the middle of the programme. Products 02 and 03 had a longer interval between their migrations than was ideal — users who spanned both products experienced inconsistency for longer than necessary. If I were doing this again, I'd push harder for tighter sequencing even at the cost of some scope reduction per phase.</p>
+    <p class="ref-text" style="margin-top:1.25rem;">I'd also have invested in a shared research repository from day one. Each product migration generated significant user research, but it lived in separate files and wasn't systematically accessible across squads. <em>A shared insights library would have made each subsequent migration faster and better-informed.</em></p>
+  </div>
+
+  <!-- NDA -->
+  <div class="nda reveal">
+    <strong style="font-weight:500;color:var(--ink-soft);">Confidentiality note</strong> — The platform, product names, and specific client data referenced in this case study are subject to a non-disclosure agreement. All names have been anonymised and metrics presented at a level of abstraction that preserves confidentiality while accurately representing the scope and impact of the work. Screens shown are from internal design files and do not represent live production interfaces.
+  </div>
+
+  <!-- NAV FOOTER -->
+  <div class="nav-f reveal">
+    <a href="case-study-search-copilot.html" class="nfc"><p class="nfd">← Previous</p><p class="nft">Search to AI Co-pilot</p><span class="nfa">←</span></a>
+    <a href="case-study-homepage.html" class="nfc r"><p class="nfd">Next →</p><p class="nft">Homepage Redesign via Synthetic Research</p><span class="nfa">→</span></a>
+  </div>
+
+</div>
+
+<div class="gold-bar"></div>
+<footer>
+  <span class="fn">Sonal Bhagria</span>
+  <span class="fr">Lead Product Designer · Gurugram, India · 2026</span>
+</footer>
+
+<script>
+  const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function animCursor(){cursor.style.transform=`translate(${mx-4}px,${my-4}px)`;rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.transform=`translate(${rx-16}px,${ry-16}px)`;requestAnimationFrame(animCursor);}
+  animCursor();
+  document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>ring.style.opacity='0.9');el.addEventListener('mouseleave',()=>ring.style.opacity='0.5');});
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+</script>
+</body>
+</html>
