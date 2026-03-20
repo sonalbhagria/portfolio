@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Report Builder — Sonal Bhagria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root {
+    --cream:        #FFFFFF;
+    --cream-deeper: #FBF5F0;
+    --cream-dark:   #F7F7F7;
+    --ink:          #1C1814;
+    --ink-soft:     #3D3530;
+    --muted:        #777777;
+    --hint:         #AAAAAA;
+    --gold:         #C4521A;
+    --gold-light:   #D97A45;
+    --gold-dark:    #9E3E10;
+    --border-soft:  #E8E8E8;
+    --serif:        'Cormorant Garamond', Georgia, serif;
+    --sans:         'DM Sans', sans-serif;
+  }
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  .cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
+  .cursor-ring{width:32px;height:32px;border:1px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:0.5;transition:opacity 0.2s;}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1);}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 4rem;transition:background 0.4s,border-bottom 0.4s;}
+  nav.scrolled{background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border-soft);}
+  .nav-back{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;display:flex;align-items:center;gap:8px;}
+  .nav-back:hover{color:var(--gold);}
+
+  /* HERO */
+  .cs-hero{padding:9rem 4rem 0;max-width:1100px;margin:0 auto;}
+  .crumb{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:2.5rem;}
+  .crumb a{color:var(--hint);text-decoration:none;transition:color 0.2s;}
+  .crumb a:hover{color:var(--gold);}
+  .crumb span{color:var(--gold-light);}
+  .eyebrow{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+  .eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--gold);}
+  h1{font-family:var(--serif);font-size:clamp(36px,5.5vw,66px);font-weight:300;line-height:1.06;letter-spacing:-0.02em;margin-bottom:1.75rem;max-width:820px;}
+  h1 em{font-style:italic;color:var(--gold-dark);}
+  .intro{font-size:15px;line-height:1.85;color:var(--muted);max-width:620px;margin-bottom:3rem;}
+  .meta-row{display:flex;gap:0;flex-wrap:wrap;border-top:0.5px solid var(--border-soft);border-bottom:0.5px solid var(--border-soft);}
+  .mc{padding:1.75rem 2.5rem 1.75rem 0;margin-right:2.5rem;border-right:0.5px solid var(--border-soft);}
+  .mc:last-child{border-right:none;margin-right:0;}
+  .ml{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:5px;}
+  .mv{font-size:14px;color:var(--ink-soft);}
+
+  /* BODY */
+  .cs-body{max-width:1100px;margin:0 auto;padding:0 4rem 6rem;}
+  .rule{height:0.5px;background:var(--border-soft);margin:4rem 0 0;}
+  .gold-bar{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.3;}
+  .sh{padding:4rem 0 0;}
+  .pill{display:inline-flex;align-items:center;margin-bottom:1.5rem;}
+  .pill-tag{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;padding:5px 12px;border:0.5px solid var(--gold);color:var(--gold);border-radius:1px;}
+  h2{font-family:var(--serif);font-size:clamp(26px,3.5vw,42px);font-weight:300;line-height:1.15;letter-spacing:-0.01em;margin-bottom:0.75rem;}
+  h2 em{font-style:italic;}
+  .sh-sub{font-family:var(--serif);font-size:17px;font-weight:300;font-style:italic;color:var(--muted);margin-bottom:2.5rem;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;padding:2.5rem 0;}
+  .prose{font-size:15px;line-height:1.9;color:var(--muted);}
+  .prose p{margin-bottom:1.25rem;}
+  .prose p:last-child{margin-bottom:0;}
+  .prose strong{font-weight:500;color:var(--ink-soft);}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .four{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .cell{background:var(--cream);padding:2rem 1.75rem;}
+  .cell.alt{background:var(--cream-dark);}
+  .cell.deep{background:var(--cream-deeper);}
+  .ck{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
+  .ct{font-family:var(--serif);font-size:17px;font-weight:400;line-height:1.3;margin-bottom:1rem;color:var(--ink);}
+  .cl{list-style:none;padding:0;}
+  .cl li{font-size:13px;line-height:1.75;color:var(--muted);padding-left:14px;position:relative;margin-bottom:4px;}
+  .cl li::before{content:'·';position:absolute;left:0;color:var(--gold);}
+
+  /* IMPACT */
+  .impact{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5px;background:var(--border-soft);margin:3.5rem 0 0;}
+  .ic{background:var(--cream-deeper);padding:2.5rem 2rem;text-align:center;}
+  .in{font-family:var(--serif);font-size:52px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:6px;}
+  .in sup{font-size:26px;vertical-align:super;}
+  .il{font-size:12px;font-weight:500;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:4px;}
+  .id{font-size:12px;color:var(--muted);line-height:1.6;}
+
+  /* PROCESS STEPS */
+  .process{display:grid;grid-template-columns:repeat(5,1fr);gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .ps{background:var(--cream);padding:2rem 1.5rem;}
+  .ps.hi{background:var(--cream-dark);}
+  .ps-num{font-family:var(--serif);font-size:36px;font-weight:300;color:var(--gold-light);line-height:1;margin-bottom:0.75rem;}
+  .ps-title{font-size:13px;font-weight:500;letter-spacing:0.04em;margin-bottom:0.5rem;color:var(--ink);}
+  .ps-desc{font-size:12px;line-height:1.75;color:var(--muted);}
+
+  /* HYPOTHESIS BLOCK */
+  .hyp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .hyp-cell{background:var(--cream);padding:2rem 1.75rem;}
+  .hyp-cell.alt{background:var(--cream-dark);}
+  .hyp-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  .hyp-text{font-size:13px;line-height:1.75;color:var(--muted);padding-left:14px;position:relative;margin-bottom:6px;}
+  .hyp-text::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:10px;top:2px;}
+
+  /* IMAGE BLOCKS */
+  .img-block{margin:2.5rem 0;border:0.5px solid var(--border-soft);overflow:hidden;}
+  .img-block img{width:100%;display:block;}
+  .img-caption{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--hint);padding:10px 12px;background:var(--cream-dark);}
+  .img-two{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2.5rem 0;}
+  .img-cell{background:var(--cream-deeper);overflow:hidden;}
+  .img-cell img{width:100%;display:block;}
+  .img-cell-cap{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--hint);padding:8px 10px;background:var(--cream-dark);}
+
+  /* METRICS DEEP DIVE */
+  .metrics-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border-soft);margin:2rem 0;}
+  .mg{background:var(--cream-dark);padding:2rem 1.75rem;}
+  .mg-num{font-family:var(--serif);font-size:40px;font-weight:300;color:var(--gold-dark);line-height:1;margin-bottom:6px;}
+  .mg-num sup{font-size:20px;vertical-align:super;}
+  .mg-label{font-size:12px;font-weight:500;color:var(--ink-soft);margin-bottom:6px;}
+  .mg-desc{font-size:12px;line-height:1.7;color:var(--muted);}
+
+  /* DARK FEATURE */
+  .dark-feature{background:#1C1814;padding:3rem 3.5rem;margin:2.5rem 0;}
+  .df-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light);margin-bottom:1rem;}
+  .df-text{font-size:15px;line-height:1.85;color:rgba(245,240,234,0.6);}
+  .df-text strong{color:#F5F0EA;font-weight:500;}
+
+  /* QUOTE */
+  .quote{padding:3rem 0;display:grid;grid-template-columns:4px 1fr;gap:2rem;}
+  .qbar{background:var(--gold);}
+  .qt{font-family:var(--serif);font-size:clamp(18px,2.5vw,26px);font-weight:300;line-height:1.55;font-style:italic;color:var(--ink-soft);}
+
+  /* HONEST METRICS */
+  .honest{background:var(--cream-deeper);border-left:3px solid var(--gold);padding:2rem 2.5rem;margin:2.5rem 0;}
+  .honest-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
+  .honest-text{font-size:14px;line-height:1.8;color:var(--ink-soft);}
+
+  /* REFLECTION */
+  .reflection{background:var(--cream-deeper);border:0.5px solid var(--border-soft);padding:3rem 3.5rem;margin:2.5rem 0;}
+  .ref-kicker{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+  .ref-text{font-family:var(--serif);font-size:20px;font-weight:300;line-height:1.6;color:var(--ink-soft);}
+  .ref-text em{font-style:italic;}
+
+  /* NDA */
+  .nda{font-size:11px;color:var(--hint);line-height:1.7;padding:2rem 0;border-top:0.5px solid var(--border-soft);margin-top:4rem;}
+
+  /* NAV FOOTER */
+  .nav-f{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border-soft);margin-top:4rem;}
+  .nfc{background:var(--cream);padding:2.5rem;text-decoration:none;color:var(--ink);transition:background 0.2s;}
+  .nfc:hover{background:var(--cream-dark);}
+  .nfd{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);margin-bottom:8px;}
+  .nft{font-family:var(--serif);font-size:20px;font-weight:300;}
+  .nfa{font-size:18px;color:var(--gold);margin-top:12px;display:block;}
+  .nfc.r{text-align:right;}
+
+  footer{background:var(--ink);color:var(--hint);padding:2.5rem 4rem;display:flex;justify-content:space-between;align-items:center;}
+  .fn{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--cream-dark);}
+  .fr{font-size:11px;letter-spacing:0.06em;}
+
+  @media(max-width:900px){
+    nav{padding:1.25rem 2rem;}
+    .cs-hero,.cs-body{padding-left:2rem;padding-right:2rem;}
+    .cs-hero{padding-top:7rem;}
+    .two,.nav-f,.hyp-grid,.img-two{grid-template-columns:1fr;}
+    .three,.four,.impact,.metrics-grid,.process{grid-template-columns:1fr 1fr;}
+    footer{flex-direction:column;gap:1rem;text-align:center;padding:2rem;}
+  }
+  @media(max-width:600px){
+    .three,.four,.impact,.metrics-grid,.process{grid-template-columns:1fr;}
+    .meta-row{flex-direction:column;}
+    .mc{border-right:none;border-bottom:0.5px solid var(--border-soft);padding:1.25rem 0;margin-right:0;}
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;font-family:'DM Sans',sans-serif;">
+    <span style="font-size:20px;font-weight:200;color:var(--ink);">S</span>
+    <span style="width:1.5px;height:16px;background:var(--gold);flex-shrink:0;"></span>
+    <span style="font-size:20px;font-weight:500;color:var(--ink);">B</span>
+  </a>
+  <a href="index.html#case-studies" class="nav-back">← Back to work</a>
+</nav>
+
+<!-- HERO -->
+<div class="cs-hero">
+  <div class="crumb reveal"><a href="index.html">Home</a><span>/</span><span>Case study</span></div>
+  <div class="eyebrow reveal d1">A leading B2B intelligence platform · 2023</div>
+  <h1 class="reveal d2">Designing a custom report builder<br>for <em>expert users who couldn't<br>find what they needed</em></h1>
+  <p class="intro reveal d3">Existing reports were too long, too generic, or too broad for the analysts, risk managers, and strategists who needed precise, geography-specific intelligence quickly. I led the design of a custom report builder from discovery to launch — giving users control over what they read, how it's structured, and who they share it with.</p>
+  <div class="meta-row reveal d4">
+    <div class="mc"><p class="ml">My role</p><p class="mv">Lead Designer · Research · Discovery to Launch</p></div>
+    <div class="mc"><p class="ml">Squad</p><p class="mv">Developers · Product Manager · QA</p></div>
+    <div class="mc"><p class="ml">Launched</p><p class="mv">Mid-2023</p></div>
+    <div class="mc"><p class="ml">Reach</p><p class="mv">335 client accounts · 922 unique users</p></div>
+  </div>
+</div>
+
+<div class="cs-body">
+
+  <!-- 1. IMPACT -->
+  <div class="impact reveal">
+    <div class="ic">
+      <div class="in">335</div>
+      <p class="il">Client accounts</p>
+      <p class="id">40% of all platform clients used Custom View — including Deloitte, World Bank, and JP Morgan</p>
+    </div>
+    <div class="ic">
+      <div class="in">65<sup>%</sup></div>
+      <p class="il">Journey success rate</p>
+      <p class="id">472 of 727 journeys resulted in a successfully created custom report</p>
+    </div>
+    <div class="ic">
+      <div class="in">27<sup>%</sup></div>
+      <p class="il">Trial conversion</p>
+      <p class="id">Trials using Custom View converted at 27% vs 19% for non-users — directional evidence of value</p>
+    </div>
+    <div class="ic">
+      <div class="in">3.6k</div>
+      <p class="il">MoM report growth</p>
+      <p class="id">Month-on-month increase in Custom View reports consumed following August 2023 rebound</p>
+    </div>
+  </div>
+
+  <!-- 2. THE BRIEF -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">The brief</span></div>
+    <h2>Reports that didn't fit <em>the people reading them</em></h2>
+    <p class="sh-sub">The problem worth solving</p>
+  </div>
+  <div class="two reveal d1">
+    <div class="prose">
+      <p>The platform's existing reports were the primary way users accessed intelligence content. But reports were built for a broad audience — too long for users who needed a quick brief, too generic for analysts tracking a specific geography or risk theme, and impossible to tailor for the way organisations actually worked.</p>
+      <p>Users struggled to compare analysis across geographies and topics because the content structure didn't support it. They couldn't reorder sections, filter to what was relevant, or save a configuration for future use. <strong>Every report consumption was a manual effort to find signal in noise.</strong></p>
+    </div>
+    <div class="prose">
+      <p>The opportunity was clear: give users control. Let them build a report that matched their actual need — the geographies they were watching, the topics that mattered to their role, the time period they were briefing on — and make that configuration reusable.</p>
+      <p>I led this project from the initial discovery brief through research, hypothesis generation, user goal mapping, wireframing, testing, and launch. I worked within a cross-functional squad of developers and a product manager, owning the design and research end to end.</p>
+    </div>
+  </div>
+
+  <!-- 3. PROCESS -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Process</span></div>
+    <h2>Discovery through <em>launch</em></h2>
+    <p class="sh-sub">Nine steps from problem to shipped product</p>
+  </div>
+
+  <div class="process reveal d1">
+    <div class="ps">
+      <div class="ps-num">01</div>
+      <p class="ps-title">Project overview</p>
+      <p class="ps-desc">Defined scope with PM — what success looked like, constraints, and what was out of scope from the start.</p>
+    </div>
+    <div class="ps hi">
+      <div class="ps-num">02</div>
+      <p class="ps-title">Problem understanding</p>
+      <p class="ps-desc">Desk research, analytics review, and stakeholder interviews to frame the problem precisely before any design.</p>
+    </div>
+    <div class="ps">
+      <div class="ps-num">03</div>
+      <p class="ps-title">Hypothesis generation</p>
+      <p class="ps-desc">12 user hypotheses generated from research — covering every job-to-be-done we expected users to bring to the feature.</p>
+    </div>
+    <div class="ps hi">
+      <div class="ps-num">04</div>
+      <p class="ps-title">User research</p>
+      <p class="ps-desc">Exploratory interviews and affinity mapping across user types — analysts, risk managers, strategy teams.</p>
+    </div>
+    <div class="ps">
+      <div class="ps-num">05</div>
+      <p class="ps-title">User goals &amp; tasks</p>
+      <p class="ps-desc">Four user goals mapped to task flows — covering single-geography reports, multi-geography comparison, template reuse, and content editing.</p>
+    </div>
+  </div>
+
+  <div class="process reveal d1" style="margin-top:1.5px;">
+    <div class="ps hi">
+      <div class="ps-num">06</div>
+      <p class="ps-title">Wireframes</p>
+      <p class="ps-desc">Three layout concepts explored — report builder UI, output view, and multi-geography template mode.</p>
+    </div>
+    <div class="ps">
+      <div class="ps-num">07</div>
+      <p class="ps-title">Final concepts</p>
+      <p class="ps-desc">High-fidelity designs produced for testing. Final screens under NDA — wireframes shared here.</p>
+    </div>
+    <div class="ps hi">
+      <div class="ps-num">08</div>
+      <p class="ps-title">UX testing</p>
+      <p class="ps-desc">Two rounds — one pre-launch, one post-launch. Post-launch iteration driven by analytics and Hotjar recordings.</p>
+    </div>
+    <div class="ps">
+      <div class="ps-num">09</div>
+      <p class="ps-title">Launch &amp; iteration</p>
+      <p class="ps-desc">Shipped mid-2023. Monitored analytics post-launch and iterated on a journey that was bouncing — discovered via Hotjar.</p>
+    </div>
+    <div class="ps hi">
+      <div class="ps-num">→</div>
+      <p class="ps-title">Continuous learning</p>
+      <p class="ps-desc">Post-launch data shaped the metrics story — both what worked and what remained directional.</p>
+    </div>
+  </div>
+
+  <!-- 4. THE PROBLEM -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Understanding the problem</span></div>
+    <h2>What research <em>confirmed</em></h2>
+    <p class="sh-sub">From observation to design direction</p>
+  </div>
+
+  <div class="three reveal d1">
+    <div class="cell">
+      <p class="ck">Problem 01</p>
+      <p class="ct">Reports are too long and too generic</p>
+      <ul class="cl">
+        <li>Reports are the primary route to platform content — but existing ones don't serve individual needs</li>
+        <li>Users spend significant time manually filtering content that isn't relevant to their brief</li>
+        <li>Length and breadth of reports works against time-pressured users</li>
+      </ul>
+    </div>
+    <div class="cell alt">
+      <p class="ck">Problem 02</p>
+      <p class="ct">Cross-geography comparison is broken</p>
+      <ul class="cl">
+        <li>Users tracking multiple geographies had no way to see parallel analysis in one place</li>
+        <li>Switching between separate country reports broke the analytical thread</li>
+        <li>No way to save a multi-geography configuration for reuse</li>
+      </ul>
+    </div>
+    <div class="cell">
+      <p class="ck">Problem 03</p>
+      <p class="ct">No control, no reuse</p>
+      <ul class="cl">
+        <li>Users couldn't reorder sections, remove irrelevant content, or add content from other reports</li>
+        <li>Every brief required starting from scratch — no templates, no saved configurations</li>
+        <li>Sharing was limited — no way to send a curated view to a colleague or manager</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="img-block reveal">
+    <img src="Desktop_-_8.jpg" alt="User research and affinity mapping — Custom View discovery">
+    <p class="img-caption">Exploratory user research — affinity mapping across user types and job-to-be-done themes</p>
+  </div>
+
+  <!-- 5. HYPOTHESES -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Hypotheses</span></div>
+    <h2>12 ways users might <em>use this</em></h2>
+    <p class="sh-sub">Generating hypotheses before designing anything</p>
+  </div>
+
+  <div class="prose reveal d1" style="max-width:700px;padding-bottom:1.5rem;">
+    <p>Before any wireframe was drawn, I generated 12 user hypotheses from the research — each framed as a job the user would bring to the feature. This kept design decisions grounded in real user intent rather than assumed functionality.</p>
+  </div>
+
+  <div class="hyp-grid reveal d2">
+    <div class="hyp-cell">
+      <p class="hyp-label">Curation hypotheses</p>
+      <p class="hyp-text">Users want to pick articles across different topics to form a single custom report</p>
+      <p class="hyp-text">Users want to create one report from a featured report across multiple geographies</p>
+      <p class="hyp-text">Users want to create one report from multiple reports for a single geography</p>
+      <p class="hyp-text">Users want to curate content for a specific date range</p>
+      <p class="hyp-text">Users want to include daily events coverage — latest developments, must-reads, insights</p>
+      <p class="hyp-text">Users want to group content by geography first</p>
+    </div>
+    <div class="hyp-cell alt">
+      <p class="hyp-label">Control &amp; reuse hypotheses</p>
+      <p class="hyp-text">Users want to reorder and show only relevant sections in existing featured reports</p>
+      <p class="hyp-text">Users want to add and remove sections so reports mirror their organisation's structure</p>
+      <p class="hyp-text">Users want to save a template and reuse it quickly for different geographies</p>
+      <p class="hyp-text">Users want to get alerted when content in a saved custom report is updated</p>
+      <p class="hyp-text">Users want to take away relevant content in the quickest way possible</p>
+      <p class="hyp-text">Users require flexibility to create reports for multiple geographies at once</p>
+    </div>
+  </div>
+
+  <!-- 6. USER GOALS -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">User goals &amp; task flows</span></div>
+    <h2>Four goals that <em>shaped the design</em></h2>
+    <p class="sh-sub">From hypotheses to concrete user journeys</p>
+  </div>
+
+  <div class="four reveal d1">
+    <div class="cell deep">
+      <p class="ck">Goal 1a</p>
+      <p class="ct" style="font-size:15px;">Quick custom report</p>
+      <p style="font-size:12px;line-height:1.7;color:var(--muted);">As an analyst, I need to create a custom report on economic outlook for Sri Lanka, Indonesia, and India for the next six months.</p>
+    </div>
+    <div class="cell">
+      <p class="ck">Goal 1b</p>
+      <p class="ct" style="font-size:15px;">Reuse saved template</p>
+      <p style="font-size:12px;line-height:1.7;color:var(--muted);">I've been asked to look for the same economic outlook for Poland and Germany — reuse the template from 1a for a new set of geographies.</p>
+    </div>
+    <div class="cell deep">
+      <p class="ck">Goal 2a</p>
+      <p class="ct" style="font-size:15px;">Edit existing report</p>
+      <p style="font-size:12px;line-height:1.7;color:var(--muted);">I need a short brief from the Business Environment and Long Term Forecast for UK — remove unnecessary sections for a strategy team briefing.</p>
+    </div>
+    <div class="cell">
+      <p class="ck">Goal 2b</p>
+      <p class="ct" style="font-size:15px;">Edit and add content</p>
+      <p style="font-size:12px;line-height:1.7;color:var(--muted);">I need political, policy and economic analysis for China — focus on risk scenarios and create a monthly report with new content added.</p>
+    </div>
+  </div>
+
+  <div class="img-block reveal">
+    <img src="Desktop_-_9.jpg" alt="User goals and task flows — Custom View">
+    <p class="img-caption">Four user goals mapped to task flows — the foundation for every design decision that followed</p>
+  </div>
+
+  <!-- 7. WIREFRAMES -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Design</span></div>
+    <h2>From blank page <em>to builder</em></h2>
+    <p class="sh-sub">Wireframes — three layouts explored</p>
+  </div>
+
+  <div class="prose reveal d1" style="max-width:700px;padding-bottom:1.5rem;">
+    <p>The core design challenge was a three-panel builder: select content, select geography, select report type and time period — then generate. The output needed to be immediately readable and shareable. I explored three layout approaches before arriving at the solution that best balanced flexibility with simplicity.</p>
+  </div>
+
+  <div class="img-block reveal">
+    <img src="Desktop_-_10.jpg" alt="Wireframes — Custom View report builder">
+    <p class="img-caption">Wireframes — report builder (left), output view (centre), multi-report template concept (right)</p>
+  </div>
+
+  <!-- 8. QUOTE -->
+  <div class="quote reveal">
+    <div class="qbar"></div>
+    <p class="qt">"The hardest part wasn't designing the builder — it was designing the output. A custom report is only useful if what comes out is as readable as what goes in."</p>
+  </div>
+
+  <!-- 9. TESTING -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Testing</span></div>
+    <h2>Two rounds — <em>before and after launch</em></h2>
+    <p class="sh-sub">How testing shaped what shipped</p>
+  </div>
+
+  <div class="two reveal d1">
+    <div>
+      <div class="cell" style="margin-bottom:1.5px;">
+        <p class="ck">Round 1 — pre-launch</p>
+        <p class="ct" style="font-size:15px;">Testing the builder interaction</p>
+        <ul class="cl">
+          <li>Moderated usability sessions with representative users across the four goal scenarios</li>
+          <li>Key finding: users expected the geography selector to behave like a search, not a browse — navigation redesigned accordingly</li>
+          <li>Time-period selector caused confusion — labelling and defaults iterated before final build</li>
+        </ul>
+      </div>
+      <div class="cell alt">
+        <p class="ck">Round 2 — post-launch</p>
+        <p class="ct" style="font-size:15px;">Analytics and Hotjar</p>
+        <ul class="cl">
+          <li>Tracked journey completion rates post-launch via analytics</li>
+          <li>Hotjar recordings revealed one journey where users were bouncing unexpectedly</li>
+          <li>Iterated on that specific flow — a small design change that significantly improved completion</li>
+          <li>Ongoing analytics monitoring across all entry routes to understand how users were discovering the feature</li>
+        </ul>
+      </div>
+    </div>
+    <div class="img-block" style="margin:0;">
+      <img src="Desktop_-_11.jpg" alt="UX testing — Custom View">
+      <p class="img-caption">UX testing synthesis — two rounds of research mapped against task flows</p>
+    </div>
+  </div>
+
+  <!-- 10. METRICS -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Outcomes</span></div>
+    <h2>What the data <em>actually showed</em></h2>
+    <p class="sh-sub">Honest metrics — strengths and open questions</p>
+  </div>
+
+  <div class="metrics-grid reveal d1">
+    <div class="mg">
+      <div class="mg-num">922</div>
+      <p class="mg-label">Unique users</p>
+      <p class="mg-desc">7% of all platform users engaged with Custom View. 335 client accounts — 40% of all platform clients — used the feature over the analysis period.</p>
+    </div>
+    <div class="mg">
+      <div class="mg-num">65<sup>%</sup></div>
+      <p class="mg-label">Journey completion</p>
+      <p class="mg-desc">472 of 727 journey starts resulted in a successfully created custom view. 35% were incomplete — a signal that onboarding and discoverability had room to improve.</p>
+    </div>
+    <div class="mg">
+      <div class="mg-num">46<sup>%</sup></div>
+      <p class="mg-label">Best entry route</p>
+      <p class="mg-desc">Report navigation and geography tabs drove 46% of entries — the most effective discovery path. External routes like bookmarks drove only 5%.</p>
+    </div>
+    <div class="mg">
+      <div class="mg-num">58<sup>%</sup></div>
+      <p class="mg-label">Single geography</p>
+      <p class="mg-desc">58% of custom views covered a single geography; 42% used multiple — showing the feature served both casual and advanced use cases.</p>
+    </div>
+    <div class="mg">
+      <div class="mg-num">27<sup>%</sup></div>
+      <p class="mg-label">Trial conversion lift</p>
+      <p class="mg-desc">Trials using Custom View converted at 27% vs 19% for non-users. Directional evidence — small sample size means this should be treated as a signal, not a proof.</p>
+    </div>
+    <div class="mg">
+      <div class="mg-num">3.6k</div>
+      <p class="mg-label">MoM report rebound</p>
+      <p class="mg-desc">A 3.6k month-on-month increase in custom view reports consumed in August 2023 — a strong recovery after a 4k drop the prior month.</p>
+    </div>
+  </div>
+
+  <!-- HONEST METRICS NOTE -->
+  <div class="honest reveal">
+    <p class="honest-label">What the data didn't show — and why that matters</p>
+    <p class="honest-text">Post-launch analysis found no direct evidence that Custom View drove renewal or was a predictive signal for retention. In some segments, usage was actually higher among churned accounts — suggesting power users engaged deeply but didn't always renew for other reasons. This was an important finding: <strong>feature engagement and business retention are related but not the same metric.</strong> It shaped how we framed success for subsequent feature development — and reinforced the need for a more holistic engagement strategy beyond individual feature adoption.</p>
+  </div>
+
+  <!-- 11. REFLECTION -->
+  <div class="rule"></div>
+  <div class="sh reveal">
+    <div class="pill"><span class="pill-tag">Reflection</span></div>
+    <h2>What I'd do <em>differently</em></h2>
+  </div>
+
+  <div class="reflection reveal d1">
+    <p class="ref-kicker">Honest retrospective</p>
+    <p class="ref-text">The 35% incomplete journey rate was the metric that stayed with me. In hindsight, I'd have invested more in the empty state and onboarding experience — what users see before they've committed to building anything. We designed the builder well, but didn't design the moment of first encounter well enough. <em>Discoverability and first-use confidence were undertreated.</em></p>
+    <p class="ref-text" style="margin-top:1.25rem;">I'd also have been more deliberate about defining success metrics upfront with the PM — specifically distinguishing between feature engagement metrics and business outcome metrics. The post-launch data was rich, but we didn't have a pre-agreed framework for interpreting it. That created some ambiguity about what the feature had actually achieved, even when the signals were largely positive.</p>
+  </div>
+
+  <!-- NDA -->
+  <div class="nda reveal">
+    <strong style="font-weight:500;color:var(--ink-soft);">Confidentiality note</strong> — The platform and product names referenced in this case study are subject to a non-disclosure agreement. All names have been anonymised. Final high-fidelity designs and production screens are not shown as they remain the intellectual property of the organisation. Wireframes and research artefacts shown here are from personal working files produced during the design process.
+  </div>
+
+  <!-- NAV FOOTER -->
+  <div class="nav-f reveal">
+    <a href="case-study-platform-migration.html" class="nfc"><p class="nfd">← Previous</p><p class="nft">Platform Migration</p><span class="nfa">←</span></a>
+    <a href="case-study-homepage.html" class="nfc r"><p class="nfd">Next →</p><p class="nft">Homepage Redesign via Synthetic Research</p><span class="nfa">→</span></a>
+  </div>
+
+</div>
+
+<div class="gold-bar"></div>
+<footer>
+  <span class="fn">Sonal Bhagria</span>
+  <span class="fr">Lead Product Designer · Gurugram, India · 2026</span>
+</footer>
+
+<script>
+  const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function animCursor(){cursor.style.transform=`translate(${mx-4}px,${my-4}px)`;rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.transform=`translate(${rx-16}px,${ry-16}px)`;requestAnimationFrame(animCursor);}
+  animCursor();
+  document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>ring.style.opacity='0.9');el.addEventListener('mouseleave',()=>ring.style.opacity='0.5');});
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+</script>
+</body>
+</html>
