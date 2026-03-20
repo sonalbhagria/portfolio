@@ -35,7 +35,13 @@
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
     }
-
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
     /* ── NAV ── */
     nav {
       position: fixed;
