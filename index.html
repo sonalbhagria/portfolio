@@ -436,8 +436,7 @@
      <!-- HOW I LEAD -->
 <div style="margin-top:2.5rem;margin-bottom:2.5rem;padding:2rem;background:var(--cream-dark);border-left:3px solid var(--gold);">
   <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">How I lead</p>
-  <p style="font-size:15px;line-height:1.85;color:var(--muted);margin-bottom:1rem;">At EIU I've mentored three junior designers — two have since been promoted. I run weekly design critiques, set individual development goals half yearly, and make a point of involving junior designers in stakeholder presentations early, so they build confidence with ambiguity before they need it.</p>
-  <p style="font-size:15px;line-height:1.85;color:var(--muted);">My approach to design leadership is to make the thinking visible — I'd rather show my reasoning on a whiteboard than hand over a finished Figma file, because the reasoning is what transfers.</p>
+  <p style="font-size:15px;line-height:1.85;color:var(--muted);">I've led design within cross-functional squads for most of my career, and I take the mentoring side seriously. I run critiques as conversations, not reviews — the goal is always for the other person to leave with a clearer point of view, not just a list of changes. Part of that is getting junior designers in front of stakeholders sooner than feels comfortable — that's where judgement actually develops.</p>
 </div>
      
      <p class="tools-label">Tools &amp; platforms</p>
@@ -520,10 +519,10 @@
         <div><p class="contact-row-type">LinkedIn</p><p class="contact-row-val">sonal-bhagria-a6767628</p></div>
         <div class="contact-row-arrow">→</div>
       </a>
-      <a href="tel:+919999793270" class="contact-row">
-        <div><p class="contact-row-type">Phone</p><p class="contact-row-val">+91 9999793270</p></div>
-        <div class="contact-row-arrow">→</div>
-      </a>
+    <div class="contact-row" style="cursor:default;">
+  <div><p class="contact-row-type">Phone</p><p class="contact-row-val" id="phone-num"></p></div>
+  <div class="contact-row-arrow"></div>
+</div>
     </div>
   </div>
 </section>
@@ -546,6 +545,7 @@
   const tog=document.getElementById('navToggle'),nav=document.getElementById('navLinks');
   tog.addEventListener('click',()=>nav.classList.toggle('open'));
   nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+ document.getElementById('phone-num').textContent = '+91 ' + '99997' + '93270';
 
   // Active nav on scroll
   const sections = document.querySelectorAll('section[id], div[id]');
