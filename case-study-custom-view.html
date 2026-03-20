@@ -444,42 +444,48 @@
     <p class="qt">"The hardest part wasn't designing the builder — it was designing the output. A custom report is only useful if what comes out is as readable as what goes in."</p>
   </div>
 
-  <!-- 9. TESTING -->
-  <div class="rule"></div>
-  <div class="sh reveal">
-    <div class="pill"><span class="pill-tag">Testing</span></div>
-    <h2>Two rounds — <em>before and after launch</em></h2>
-    <p class="sh-sub">How testing shaped what shipped</p>
-  </div>
-
-  <div class="two reveal d1">
-    <div>
-      <div class="cell" style="margin-bottom:1.5px;">
-        <p class="ck">Round 1 — pre-launch</p>
-        <p class="ct" style="font-size:15px;">Testing the builder interaction</p>
-        <ul class="cl">
-          <li>Moderated usability sessions with representative users across the four goal scenarios</li>
-          <li>Key finding: users expected the geography selector to behave like a search, not a browse — navigation redesigned accordingly</li>
-          <li>Time-period selector caused confusion — labelling and defaults iterated before final build</li>
-        </ul>
-      </div>
-      <div class="cell alt">
-  <p class="ck">Round 2 — post-launch</p>
-  <p class="ct" style="font-size:15px;">Analytics and Hotjar</p>
-  <ul class="cl">
-    <li>Monitored journey completion rates in analytics from day one — not as a retrospective check, but as an active design signal</li>
-    <li>Analytics flagged a specific journey where drop-off was higher than expected — I used Hotjar session recordings to watch exactly where users were stopping and why</li>
-    <li>The recording showed users reaching a particular step and hesitating — the CTA wasn't clearly communicating what would happen next. A copy and layout change resolved it</li>
-    <li>This is the part of design most portfolios skip: the moment after launch when data tells you what usability testing didn't catch at scale</li>
-    <li>Entry route analytics also showed 46% of users arriving via report navigation — which directly informed where we prioritised feature discoverability in subsequent work</li>
-  </ul>
+  <!-- 8. TESTING -->
+<div class="rule"></div>
+<div class="sh reveal">
+  <div class="pill"><span class="pill-tag">Testing</span></div>
+  <h2>Two rounds — <em>before and after launch</em></h2>
+  <p class="sh-sub">How testing shaped what shipped</p>
 </div>
-    </div>
-    <div class="img-block" style="margin:0;">
-      <p class="img-caption">UX testing synthesis — two rounds of research mapped against task flows</p>
-    </div>
+
+<div class="three reveal d1">
+  <div class="cell">
+    <p class="ck">Round 1 — pre-launch</p>
+    <p class="ct" style="font-size:15px;">Testing the builder interaction</p>
+    <ul class="cl">
+      <li>Moderated usability sessions across the four goal scenarios with representative users</li>
+      <li>Users expected the geography selector to behave like a search, not a browse — navigation redesigned accordingly</li>
+      <li>Time-period selector caused confusion — labelling and defaults iterated before final build</li>
+      <li>Report output view tested separately — users needed clearer section hierarchy to scan efficiently</li>
+    </ul>
   </div>
-<div style="background:var(--cream-deeper);border-left:3px solid var(--gold);padding:2rem 2.5rem;margin:2.5rem 0;">
+  <div class="cell alt">
+    <p class="ck">Round 2 — post-launch</p>
+    <p class="ct" style="font-size:15px;">Analytics and Hotjar</p>
+    <ul class="cl">
+      <li>Monitored journey completion rates in analytics from day one — not as a retrospective check, but as an active design signal</li>
+      <li>Analytics flagged a specific journey where drop-off was higher than expected — I used Hotjar session recordings to watch exactly where users were stopping and why</li>
+      <li>The recording showed users hesitating at a specific step — the CTA wasn't clearly communicating what would happen next. A copy and layout change resolved it</li>
+      <li>Entry route analytics showed 46% of users arriving via report navigation — directly informing where we prioritised discoverability in subsequent work</li>
+    </ul>
+  </div>
+  <div class="cell deep">
+    <p class="ck">What testing taught me</p>
+    <p class="ct" style="font-size:15px;">The part most portfolios skip</p>
+    <ul class="cl">
+      <li>Pre-launch testing catches what users say — post-launch analytics catches what they actually do</li>
+      <li>Hotjar gave me unfiltered behaviour at scale, from real users in their working context — no facilitator effect</li>
+      <li>The 35% incomplete journey rate post-launch was the most honest signal: onboarding and first-use confidence were undertreated</li>
+      <li>Analytics isn't a reporting layer on this project — it was a design input at every stage</li>
+    </ul>
+  </div>
+</div>
+
+<div style="background:var(--cream-deeper);border-left:3px solid var(--gold);padding:2rem 2.5rem;margin:2.5rem 0;" class="reveal">
   <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;">How I use analytics in design</p>
   <p style="font-size:15px;line-height:1.85;color:var(--muted);">On this project, analytics wasn't a reporting layer — it was a design tool. I used it before launch to set baseline expectations, immediately after launch to catch failure points in real behaviour, and over time to understand how users were discovering the feature. Hotjar session recordings gave me something no usability test could: unfiltered behaviour at scale, from real users, in their actual working context. That combination of quantitative signals and qualitative recordings is how I close the gap between what users say and what they do.</p>
 </div>
