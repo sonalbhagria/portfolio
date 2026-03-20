@@ -25,6 +25,13 @@
     --sans:         'DM Sans', sans-serif;
   }
   html{scroll-behavior:smooth;}
+ @media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .cursor, .cursor-ring { display: none; }
+}
+    *:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
   body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;}
   .cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
   .cursor-ring{width:32px;height:32px;border:1px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:0.5;transition:opacity 0.2s;}
